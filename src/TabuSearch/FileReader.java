@@ -5,6 +5,9 @@ import java.util.*;
 
 import static java.lang.Math.*;
 
+/**
+ * Class that reads a tsp file and interprets it as a tps problem.
+ */
 class FileReader {
 
     //Possible forms of distance given the coordinates
@@ -115,7 +118,7 @@ class FileReader {
         else if (Objects.equals(array.get(index), "CEIL_2D")){
             CEIL_2D = true;
         }
-        else if (Objects.equals(array.get(1), "ATT")){
+        else if (Objects.equals(array.get(index), "ATT")){
             ATT = true;
         }
     }
@@ -151,6 +154,7 @@ class FileReader {
                 double xd = readerNodes.get(i+1).x - readerNodes.get(j+1).x;
                 double yd = readerNodes.get(i+1).y - readerNodes.get(j+1).y;
                 readerDistanceMatrix[i][j] = (int) (sqrt((xd * xd + yd * yd) / 10)) + 1;
+                readerDistanceMatrix[j][i] = (int) (sqrt((xd * xd + yd * yd) / 10)) + 1;
             }
         }
     }
@@ -164,6 +168,7 @@ class FileReader {
                 double xd = readerNodes.get(i+1).x - readerNodes.get(j+1).x;
                 double yd = readerNodes.get(i+1).y - readerNodes.get(j+1).y;
                 readerDistanceMatrix[i][j] = (double) (sqrt(xd * xd + yd * yd));
+                readerDistanceMatrix[j][i] = (double) (sqrt(xd * xd + yd * yd));
             }
         }
     }
@@ -177,6 +182,7 @@ class FileReader {
                 double xd = readerNodes.get(i+1).x - readerNodes.get(j+1).x;
                 double yd = readerNodes.get(i+1).y - readerNodes.get(j+1).y;
                 readerDistanceMatrix[i][j] = (int) (sqrt(xd * xd + yd * yd)) + 1;
+                readerDistanceMatrix[j][i] = (int) (sqrt(xd * xd + yd * yd)) + 1;
             }
         }
     }
@@ -206,6 +212,7 @@ class FileReader {
                 double q3 = cos( latitude[v] + latitude[w] );
                 int dij = (int) ( RadiusEarth * acos( 0.5*((1.0+q1)*q2 - (1.0-q1)*q3) ) + 1.0);
                 readerDistanceMatrix[v][w] = dij;
+                readerDistanceMatrix[w][v] = dij;
             }
         }
     }
@@ -265,10 +272,10 @@ class FileReader {
         else if (Objects.equals(array.get(index), "LOWER_ROW")){
             LOWER_ROW = true;
         }
-        else if (Objects.equals(array.get(1), "UPPER_DIAG_ROW")){
+        else if (Objects.equals(array.get(index), "UPPER_DIAG_ROW")){
             UPPER_DIAG_ROW = true;
         }
-        else if (Objects.equals(array.get(1), "LOWER_DIAG_ROW")){
+        else if (Objects.equals(array.get(index), "LOWER_DIAG_ROW")){
             LOWER_DIAG_ROW = true;
         }
     }
@@ -382,11 +389,14 @@ class FileReader {
      * @return An Array of strings with the words of the line.
      */
     private ArrayList<String> lineSplit(String s){
-        String[] arrayOfNextLine = s.split(" ");
+        String[] arrayOfNextLine = s.split("\t");
         ArrayList<String> array = new ArrayList<String>();
         for (String i : arrayOfNextLine) {
-            if (!(Objects.equals(i, ""))) {
-                array.add(i);
+            String[] secondArray = i.split(" ");
+            for (String j: secondArray){
+                if (!(Objects.equals(j, ""))) {
+                    array.add(j);
+                }
             }
         }
         return array;
