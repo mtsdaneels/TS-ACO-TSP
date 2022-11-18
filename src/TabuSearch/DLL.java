@@ -1,5 +1,7 @@
 package TabuSearch;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -112,5 +114,25 @@ public class DLL implements DLLInterface {
             temp = temp.next;
         }
         return temp;
+    }
+
+    @Override
+    public List<Integer> getElements(){
+        List<Integer> list = new ArrayList<>();
+        Node temp = head;
+        while (temp != null){
+           list.add(temp.element);
+           temp = temp.next;
+        }
+        return list;
+    }
+
+    /**
+     * Removes all the elements from the DLL.
+     */
+    protected void removeAll(){
+        head = null;
+        tail = null;
+        size = 0;
     }
 }

@@ -1,5 +1,7 @@
 package TabuSearch;
 
+import java.util.List;
+
 /**
  * Interface for a double linked list with integers as its elements.
  */
@@ -43,4 +45,9 @@ public interface DLLInterface {
      * @return The first node in the DLL with element k.
      */
     DLL.Node search(int k);
+
+    /**
+     * Returns a list of the elements that are in the DLL.
+     */
+    List<Integer> getElements();
 }
