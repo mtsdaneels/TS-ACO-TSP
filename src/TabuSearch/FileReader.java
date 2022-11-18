@@ -8,7 +8,7 @@ import static java.lang.Math.*;
 /**
  * Class that reads a tsp file and interprets it as a tps problem.
  */
-class FileReader {
+class FileReader implements FileReaderInterface{
 
     //Possible forms of distance given the coordinates
     boolean ATT = false;
@@ -38,7 +38,8 @@ class FileReader {
     /**
      * Get the dimension of the problem.
      */
-    int getDimension(){
+    @Override
+    public int getDimension(){
         return readerDimension;
     }
 
@@ -50,7 +51,8 @@ class FileReader {
     /**
      * Get the matrix representing the distances between edges.
      */
-    double[][] getMatrix(){
+    @Override
+    public double[][] getMatrix(){
         return readerDistanceMatrix;
     }
 
@@ -62,7 +64,8 @@ class FileReader {
     /**
      * Get the nodes with coordinates.
      */
-    HashMap<Integer, Tuple<Double, Double>> getNodes() {
+    @Override
+    public HashMap<Integer, Tuple<Double, Double>> getNodes() {
         return readerNodes;
     }
 
@@ -418,7 +421,7 @@ class FileReader {
      * @param fileName The name of the file.
      * @throws Exception Gets thrown when the given file cannot be found.
      */
-    public void read(String fileName) throws Exception {
+    private void read(String fileName) throws Exception {
         Scanner scanner = new Scanner(new File(fileName));
         while (scanner.hasNextLine()){
             String nextLine = scanner.nextLine();
