@@ -35,9 +35,6 @@ class FileReader implements FileReaderInterface{
      */
     private int readerDimension;
 
-    /**
-     * Get the dimension of the problem.
-     */
     @Override
     public int getDimension(){
         return readerDimension;
@@ -48,9 +45,6 @@ class FileReader implements FileReaderInterface{
      */
     private double[][] readerDistanceMatrix;
 
-    /**
-     * Get the matrix representing the distances between edges.
-     */
     @Override
     public double[][] getMatrix(){
         return readerDistanceMatrix;
@@ -61,9 +55,6 @@ class FileReader implements FileReaderInterface{
      */
     private final HashMap<Integer, Tuple<Double, Double>> readerNodes = new HashMap<>();
 
-    /**
-     * Get the nodes with coordinates.
-     */
     @Override
     public HashMap<Integer, Tuple<Double, Double>> getNodes() {
         return readerNodes;
@@ -108,6 +99,9 @@ class FileReader implements FileReaderInterface{
      * @param array An array of strings made of the line in the input file containing the edge weight type.
      */
     private void decideInputTypeCoord_Section(ArrayList<String> array){
+        if (array == null){
+            throw new IllegalArgumentException();
+        }
         int index = 1;
         if (Objects.equals(array.get(0), "EDGE_WEIGHT_TYPE")){
             index = 2;
