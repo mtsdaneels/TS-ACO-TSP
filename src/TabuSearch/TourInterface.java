@@ -15,4 +15,37 @@ public interface TourInterface {
      * given by getTour() or if i and j are the first and last element.
      */
     int getTourLength();
+
+
+
+    //TODO: Extra aan interface, mag dit??
+    /**
+     * Adds an element to the back of the tour.
+     * @param element The element we want to add.
+     */
+    void addLast(int element);
+
+    /**
+     * Adds an element to the front of the tour.
+     * @param element The element we want to add.
+     */
+    void addFirst(int element);
+
+    /**
+     * Removes and returns the last element of the tour.
+     * @return The last element of the tour.
+     */
+    int removeLast();
+
+    /**
+     * Removes and returns the first element of the tour.
+     * @return The first element of the tour.
+     */
+    int removeFirst();
+
+    /**
+     * Returns the size of the tour
+     * @return The amount of nodes in the tour.
+     */
+    int getAmountOfNodes();
 }
