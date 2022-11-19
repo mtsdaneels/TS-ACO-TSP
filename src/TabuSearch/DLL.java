@@ -30,13 +30,13 @@ public class DLL implements DLLInterface {
      */
     protected class Node{
         final int element;
-        DLL.Node next;
-        DLL.Node prev;
+        DLL.Node Node1;
+        DLL.Node Node2;
 
         public Node(int element, DLL.Node next, DLL.Node prev){
             this.element = element;
-            this.next = next;
-            this.prev = prev;
+            this.Node1 = next;
+            this.Node2 = prev;
         }
     }
 
@@ -61,7 +61,7 @@ public class DLL implements DLLInterface {
     public void insertFirst(int element) {
         Node temp = new Node(element, head, null);
         if (head != null){
-            head.prev = temp;
+            head.Node2 = temp;
         }
         head = temp;
         if (tail == null){
@@ -74,7 +74,7 @@ public class DLL implements DLLInterface {
     public void insertLast(int element) {
         Node temp = new Node(element, null, tail);
         if (tail != null){
-            tail.next = temp;
+            tail.Node1 = temp;
         }
         tail = temp;
         if (head == null){
@@ -89,8 +89,8 @@ public class DLL implements DLLInterface {
             throw new NoSuchElementException();
         }
         Node temp = head;
-        head = head.next;
-        head.prev = null;
+        head = head.Node1;
+        head.Node2 = null;
         size--;
         return temp;
     }
@@ -101,8 +101,8 @@ public class DLL implements DLLInterface {
             throw new NoSuchElementException();
         }
         Node temp = tail;
-        tail = tail.prev;
-        tail.next = null;
+        tail = tail.Node2;
+        tail.Node1 = null;
         size--;
         return temp;
     }
@@ -111,7 +111,7 @@ public class DLL implements DLLInterface {
     public DLL.Node search(int k) {
         Node temp = head;
         while (temp != null && temp.element != k){
-            temp = temp.next;
+            temp = temp.Node1;
         }
         return temp;
     }
@@ -119,10 +119,18 @@ public class DLL implements DLLInterface {
     @Override
     public List<Integer> getElements(){
         List<Integer> list = new ArrayList<>();
+        Node pastNode = null;
         Node temp = head;
         while (temp != null){
            list.add(temp.element);
-           temp = temp.next;
+           if (temp.Node1 != pastNode){
+               pastNode = temp;
+               temp = temp.Node1;
+           }
+           else{
+               pastNode = temp;
+               temp = temp.Node2;
+           }
         }
         return list;
     }
