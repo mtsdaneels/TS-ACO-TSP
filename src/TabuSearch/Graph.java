@@ -1,6 +1,5 @@
 package TabuSearch;
 
-import java.io.*;
 import java.lang.*;
 import java.util.*;
 
@@ -14,13 +13,27 @@ public class Graph implements GraphInterface{
     /**
      * Matrix containing the dinstances between nodes.
      */
-    private final double[][] distanceMatrix;
+    protected final double[][] distanceMatrix;
+
+    /**
+     * Returns the distance matrix.
+     */
+    public double[][] getDistanceMatrix(){
+        return distanceMatrix;
+    }
 
     /**
      * Map containing the nodes with their x- and y-coordinate.
      */
     //TODO Set to private
     public final HashMap<Integer, Tuple<Double, Double>> nodes;
+
+    /**
+     * Return the nodes of the graph.
+     */
+    public HashMap<Integer, Tuple<Double, Double>> getNodes(){
+        return nodes;
+    }
 
     /**
      * Constructor initialising variables dimension, distanceMatrix and nodes given a file.
@@ -36,24 +49,27 @@ public class Graph implements GraphInterface{
 
     @Override
     public Collection<Integer> getVertices() {
-        return null;
+        return nodes.keySet();
     }
 
     @Override
     public int getNumberOfVertices() {
-        return 0;
+        return dimension;
     }
 
+    //TODO return veranderen naar double, mag dat?
     @Override
     public int getDistance(int i, int j) {
-        return 0;
+        return (int) distanceMatrix[i-1][j-1];
     }
 
+    //TODO
     @Override
     public Tour getTabuSearchBestTour(int maxNumberOfIterations) {
         return null;
     }
 
+    //TODO
     @Override
     public Tour getOtherHeuristicBestTour(int maxNumberOfIterations) {
         return null;
