@@ -79,6 +79,7 @@ public class DLL implements DLLInterface {
             return Node2;
         }
 
+        //TODO delete setNode if never used
         /**
          * Set Node1 to the given node.
          * @param newNode The new Node1.
@@ -87,6 +88,7 @@ public class DLL implements DLLInterface {
             Node1 = newNode;
         }
 
+        //TODO delete setNode if never used
         /**
          * Set Node2 tp the given node.
          * @param newNode The new Node2.
@@ -117,6 +119,20 @@ public class DLL implements DLLInterface {
             }
             return Node2;
         }
+
+        /**
+         * Swaps one of the 2 nodes with another one.
+         * @param oneToChange The one to swap.
+         * @param ChangeTo The new node.
+         */
+        public void changeNodeTo(Node oneToChange, Node ChangeTo){
+            if (Node1 == oneToChange){
+                Node1 = ChangeTo;
+            }
+            else if (Node2 == oneToChange){
+                Node2 = ChangeTo;
+            }
+        }
     }
 
     /**
@@ -140,12 +156,7 @@ public class DLL implements DLLInterface {
     public void insertFirst(int element) {
         Node temp = new Node(element, head, null);
         if (head != null){
-            if (head.Node2 == null){
-                head.Node2 = temp;
-            }
-            else{
-                head.Node1 = temp;
-            }
+            head.changeNodeTo(null, temp);
         }
         head = temp;
         if (tail == null){
@@ -158,12 +169,7 @@ public class DLL implements DLLInterface {
     public void insertLast(int element) {
         Node temp = new Node(element, null, tail);
         if (tail != null){
-            if (tail.Node1 == null){
-                tail.Node1 = temp;
-            }
-            else{
-                tail.Node2 = temp;
-            }
+            tail.changeNodeTo(null, temp);
         }
         tail = temp;
         if (head == null){
@@ -180,18 +186,10 @@ public class DLL implements DLLInterface {
         Node temp = head;
         if (!(size == 1)) {
             if (head.Node1 == null) {
-                if (head.Node2.Node1 == head) {
-                    head.Node2.Node1 = null;
-                } else {
-                    head.Node2.Node2 = null;
-                }
+                head.Node2.changeNodeTo(head, null);
                 head = head.Node2;
             } else {
-                if (head.Node1.Node1 == head) {
-                    head.Node1.Node1 = null;
-                } else {
-                    head.Node1.Node2 = null;
-                }
+                head.Node1.changeNodeTo(head, null);
                 head = head.Node1;
             }
             size--;
@@ -210,18 +208,10 @@ public class DLL implements DLLInterface {
         Node temp = tail;
         if (!(size == 1)) {
             if (tail.Node1 == null) {
-                if (tail.Node2.Node1 == tail) {
-                    tail.Node2.Node1 = null;
-                } else {
-                    tail.Node2.Node2 = null;
-                }
+                tail.Node2.changeNodeTo(tail, null);
                 tail = tail.Node2;
             } else {
-                if (tail.Node1.Node1 == tail) {
-                    tail.Node1.Node1 = null;
-                } else {
-                    tail.Node1.Node2 = null;
-                }
+                tail.Node1.changeNodeTo(tail, null);
                 tail = tail.Node1;
             }
             size--;
@@ -234,6 +224,34 @@ public class DLL implements DLLInterface {
 
     @Override
     public DLL.Node search(int k) {
+        if (size == 0){
+            return null;
+        }
+        Node node = searchWithoutRemove(k);
+        return remove(node);
+    }
+
+    @Override
+    public DLL.Node remove(Node node){
+        if (node == null){
+            throw new IllegalArgumentException("Node cannot be null!");
+        }
+        if (node == head) {
+            return removeFirst();
+        }
+        else if (node == tail){
+            return removeLast();
+        }
+        Node prev = node.Node1;
+        Node next = node.Node2;
+        prev.changeNodeTo(node, next);
+        next.changeNodeTo(node, prev);
+        size--;
+        return node;
+    }
+
+    @Override
+    public DLL.Node searchWithoutRemove(int k){
         Node solution = head;
         Node temp;
         Node prev = null;
@@ -286,6 +304,26 @@ public class DLL implements DLLInterface {
         return null;
     }
 
+    @Override
+    public int getIndexOf(int elementOfNode){
+        Node solution = head;
+        int index = 0;
+        Node temp;
+        Node prev = null;
+        while (solution != null && solution.element != elementOfNode){
+            temp = solution;
+            solution = solution.getNext(prev);
+            prev = temp;
+            index++;
+        }
+        if (solution != null){
+            return index;
+        }
+        else{
+            throw new NoSuchElementException("No element with given value in DLL!");
+        }
+    }
+
     /**
      * Removes all the elements from the DLL.
      */
@@ -300,5 +338,79 @@ public class DLL implements DLLInterface {
      */
     protected void printTour(){
         System.out.println(getElements());
+    }
+
+    /**
+     * Preform a 2-opt move when the second element is the tail.
+     * @param bestMove The move to be performed.
+     */
+    private void makeMove2_optWithJAtEnd(Tuple<Integer, Integer> bestMove){
+        int iValue = bestMove.x;
+        int jValue = bestMove.y;
+        Node nodeI = searchWithoutRemove(iValue);
+        Node nodeBefI = getNodeAtIndex(getIndexOf(iValue)-1);
+        Node nodeJ = searchWithoutRemove(jValue);
+        //Change of node i-1
+        nodeBefI.changeNodeTo(nodeI, nodeJ);
+        //Change of node i
+        nodeI.changeNodeTo(nodeBefI, null);
+        //Change of node j
+        nodeJ.changeNodeTo(null, nodeBefI);
+        tail = nodeI;
+    }
+
+    /**
+     * Preform a 2-opt move when the first element is the head.
+     * @param bestMove The move to be performed.
+     */
+    private void makeMove2_optWithIAtBegin(Tuple<Integer, Integer> bestMove){
+        int iValue = bestMove.x;
+        int jValue = bestMove.y;
+        Node nodeI = searchWithoutRemove(iValue);
+        Node nodeJ = searchWithoutRemove(jValue);
+        Node nodeAfterJ = getNodeAtIndex(getIndexOf(jValue)+1);
+        //Change of node i
+        nodeI.changeNodeTo(null, nodeAfterJ);
+        //Change of node j
+        nodeJ.changeNodeTo(nodeAfterJ, null);
+        //Change of node j+1
+        nodeAfterJ.changeNodeTo(nodeJ, nodeI);
+        head = nodeJ;
+    }
+
+    @Override
+    public void makeMove2_opt(Tuple<Integer, Integer> bestMove){
+        int iValue;
+        int jValue;
+        if (getIndexOf(bestMove.x) > getIndexOf(bestMove.y)){
+            iValue = bestMove.y;
+            jValue = bestMove.x;
+        }
+        else{
+            iValue = bestMove.x;
+            jValue = bestMove.y;
+        }
+        if (getIndexOf(jValue) == size - 1) {
+            makeMove2_optWithJAtEnd(bestMove);
+            return;
+        }
+        if (getIndexOf(iValue) == 0){
+            makeMove2_optWithIAtBegin(bestMove);
+            return;
+        }
+
+        Node nodeBefI = getNodeAtIndex(getIndexOf(iValue)-1);
+        Node nodeI = searchWithoutRemove(iValue);
+        Node nodeAfterJ = getNodeAtIndex(getIndexOf(jValue)+1);
+        Node nodeJ = searchWithoutRemove(jValue);
+
+        //Change of node i-1
+        nodeBefI.changeNodeTo(nodeI, nodeJ);
+        //Change of node i
+        nodeI.changeNodeTo(nodeBefI, nodeAfterJ);
+        //Change of node j
+        nodeJ.changeNodeTo(nodeAfterJ, nodeBefI);
+        //Change of node j+1
+        nodeAfterJ.changeNodeTo(nodeJ, nodeI);
     }
 }

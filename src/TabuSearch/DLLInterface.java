@@ -71,4 +71,28 @@ public interface DLLInterface {
      * @param index The index where we want to get the node.
      */
     DLL.Node getNodeAtIndex(int index);
+
+    /**
+     * Preform a 2-opt move.
+     * @param bestMove The move to be performed.
+     */
+    void makeMove2_opt(Tuple<Integer, Integer> bestMove);
+
+    /**
+     * Removes and returns the node from the DLL.
+     * @param node The node we want to remove.
+     */
+    DLL.Node remove(DLL.Node node);
+
+    /**
+     * Returns the node with element k, returns null if k not in the DLL.
+     * @param k The element.
+     */
+    DLL.Node searchWithoutRemove(int k);
+
+    /**
+     * Returns the index of the first node with the given element.
+     * @param elementOfNode The element of the node.
+     */
+    int getIndexOf(int elementOfNode);
 }
