@@ -50,4 +50,25 @@ public interface DLLInterface {
      * Returns a list of the elements that are in the DLL.
      */
     List<Integer> getElements();
+
+    /**
+     * Returns the head.
+     */
+    DLL.Node getHead();
+
+    /**
+     * Returns the tail.
+     */
+    DLL.Node getTail();
+
+    /**
+     * Returns the size.
+     */
+    int getSize();
+
+    /**
+     * Returns the node at a given index in the list.
+     * @param index The index where we want to get the node.
+     */
+    DLL.Node getNodeAtIndex(int index);
 }

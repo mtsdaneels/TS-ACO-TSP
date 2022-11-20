@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 
 /**
  * Class representing a double linked list with integers as the elements.
- * TODO @invar size >= 0
+ * TODO @invar size >= 0?
  */
 public class DLL implements DLLInterface {
 
@@ -15,28 +15,107 @@ public class DLL implements DLLInterface {
      */
     private Node head;
 
+    @Override
+    public Node getHead(){
+        return head;
+    }
+
     /**
      * Pointer to the tail of the DLL.
      */
     private Node tail;
+    @Override
+    public Node getTail(){
+        return tail;
+    }
 
     /**
      * The size of the DLL.
      */
     private int size;
 
+    @Override
+    public int getSize(){
+        return size;
+    }
+
     /**
      * Class representing a node from a DLL.
      */
-    protected class Node{
+    public static class Node{
+        /**
+         * The element of the node.
+         */
         final int element;
+
+        /**
+         * Returns the element.
+         */
+        public int getElement(){
+            return element;
+        }
+
+        /**
+         * First node that is linked.
+         */
         DLL.Node Node1;
+
+        /**
+         * Returns first node that is linked.
+         */
+        public Node getNode1() {
+            return Node1;
+        }
+
+        /**
+         * Second node that is linked.
+         */
         DLL.Node Node2;
 
-        public Node(int element, DLL.Node next, DLL.Node prev){
+        /**
+         * Returns second node that is linked.
+         */
+        public Node getNode2(){
+            return Node2;
+        }
+
+        /**
+         * Set Node1 to the given node.
+         * @param newNode The new Node1.
+         */
+        public void setNode1(DLL.Node newNode){
+            Node1 = newNode;
+        }
+
+        /**
+         * Set Node2 tp the given node.
+         * @param newNode The new Node2.
+         */
+        public void setNode2(DLL.Node newNode){
+            Node2 = newNode;
+        }
+
+        /**
+         * Initializes a new node with given element and 2 linked nodes.
+         * @param element The element of the node.
+         * @param Node1 The first node that is linked.
+         * @param Node2 The second node that is linked.
+         */
+        public Node(int element, DLL.Node Node1, DLL.Node Node2){
             this.element = element;
-            this.Node1 = next;
-            this.Node2 = prev;
+            this.Node1 = Node1;
+            this.Node2 = Node2;
+        }
+
+        /**
+         * Returns the next node when given the previous.
+         * @param prev The previous node.
+         */
+        public DLL.Node getNext(DLL.Node prev){
+            if (Node1 != prev){
+                return Node1;
+            }
+            return Node2;
         }
     }
 
@@ -61,7 +140,12 @@ public class DLL implements DLLInterface {
     public void insertFirst(int element) {
         Node temp = new Node(element, head, null);
         if (head != null){
-            head.Node2 = temp;
+            if (head.Node2 == null){
+                head.Node2 = temp;
+            }
+            else{
+                head.Node1 = temp;
+            }
         }
         head = temp;
         if (tail == null){
@@ -74,7 +158,12 @@ public class DLL implements DLLInterface {
     public void insertLast(int element) {
         Node temp = new Node(element, null, tail);
         if (tail != null){
-            tail.Node1 = temp;
+            if (tail.Node1 == null){
+                tail.Node1 = temp;
+            }
+            else{
+                tail.Node2 = temp;
+            }
         }
         tail = temp;
         if (head == null){
@@ -89,9 +178,27 @@ public class DLL implements DLLInterface {
             throw new NoSuchElementException();
         }
         Node temp = head;
-        head = head.Node1;
-        head.Node2 = null;
-        size--;
+        if (!(size == 1)) {
+            if (head.Node1 == null) {
+                if (head.Node2.Node1 == head) {
+                    head.Node2.Node1 = null;
+                } else {
+                    head.Node2.Node2 = null;
+                }
+                head = head.Node2;
+            } else {
+                if (head.Node1.Node1 == head) {
+                    head.Node1.Node1 = null;
+                } else {
+                    head.Node1.Node2 = null;
+                }
+                head = head.Node1;
+            }
+            size--;
+        }
+        else{
+            removeAll();
+        }
         return temp;
     }
 
@@ -101,19 +208,41 @@ public class DLL implements DLLInterface {
             throw new NoSuchElementException();
         }
         Node temp = tail;
-        tail = tail.Node2;
-        tail.Node1 = null;
-        size--;
+        if (!(size == 1)) {
+            if (tail.Node1 == null) {
+                if (tail.Node2.Node1 == tail) {
+                    tail.Node2.Node1 = null;
+                } else {
+                    tail.Node2.Node2 = null;
+                }
+                tail = tail.Node2;
+            } else {
+                if (tail.Node1.Node1 == tail) {
+                    tail.Node1.Node1 = null;
+                } else {
+                    tail.Node1.Node2 = null;
+                }
+                tail = tail.Node1;
+            }
+            size--;
+        }
+        else{
+            removeAll();
+        }
         return temp;
     }
 
     @Override
     public DLL.Node search(int k) {
-        Node temp = head;
-        while (temp != null && temp.element != k){
-            temp = temp.Node1;
+        Node solution = head;
+        Node temp;
+        Node prev = null;
+        while (solution != null && solution.element != k){
+            temp = solution;
+            solution = solution.getNext(prev);
+            prev = temp;
         }
-        return temp;
+        return solution;
     }
 
     @Override
@@ -135,12 +264,41 @@ public class DLL implements DLLInterface {
         return list;
     }
 
+    @Override
+    public DLL.Node getNodeAtIndex(int index){
+        if (index >= size){
+            throw new IllegalArgumentException();
+        }
+        int x = 0;
+        DLL.Node nodeAtX = head;
+        DLL.Node prev = null;
+        DLL.Node temp;
+        while (x < size){
+            if (x == index){
+                return nodeAtX;
+            }
+            temp = nodeAtX;
+            nodeAtX = nodeAtX.getNext(prev);
+            prev = temp;
+            x++;
+        }
+        assert false: "Should not happen";
+        return null;
+    }
+
     /**
      * Removes all the elements from the DLL.
      */
-    protected void removeAll(){
+    public void removeAll(){
         head = null;
         tail = null;
         size = 0;
+    }
+
+    /**
+     * Print the tour.
+     */
+    protected void printTour(){
+        System.out.println(getElements());
     }
 }
