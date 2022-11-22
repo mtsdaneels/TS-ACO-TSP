@@ -1,6 +1,8 @@
 package TabuSearch;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,6 +45,26 @@ public class DLLTest {
         Assert.assertFalse(dllList.isEmpty());
         dllList.removeFirst();
         Assert.assertTrue(dllList.isEmpty());
+    }
+
+    @Test
+    public void makeDeepCopyOfTest(){
+        Assert.assertNull(dllList.getHead());
+        Assert.assertNull(dllList.getTail());
+        dllList.insertFirst(5);
+        dllList.insertFirst(10);
+        dllList.insertFirst(8);
+        dllList.insertFirst(3);
+        dllList.insertFirst(9);
+        dllList.insertFirst(1);
+        dllList.insertFirst(4);
+        dllList.insertFirst(7);
+        dllList.insertFirst(6);
+        dllList.insertFirst(2);
+        //dllList = [2,6,7,4,1,9,3,8,10,5]
+        DLL newDll = new DLL();
+        newDll.makeDeepCopyOf(dllList);
+        Assert.assertEquals(dllList.getElements(), newDll.getElements());
     }
 
     @Test
@@ -108,6 +130,23 @@ public class DLLTest {
         Assert.assertNull(dllList.getHead());
         Assert.assertNull(dllList.getTail());
         dllList.removeFirst();
+    }
+
+    @Test
+    public void getIndexOfTest(){
+        Assert.assertNull(dllList.getHead());
+        Assert.assertNull(dllList.getTail());
+        dllList.insertFirst(2);
+        dllList.insertFirst(1);
+        dllList.insertLast(3);
+        Assert.assertEquals(0, dllList.getIndexOf(1));
+        Assert.assertEquals(1, dllList.getIndexOf(2));
+        Assert.assertEquals(2, dllList.getIndexOf(3));
+        dllList.removeLast();
+        Assert.assertEquals(0, dllList.getIndexOf(1));
+        Assert.assertEquals(1, dllList.getIndexOf(2));
+        dllList.removeFirst();
+        Assert.assertEquals(0, dllList.getIndexOf(2));
     }
 
     @Test

@@ -3,6 +3,10 @@ package TabuSearch;
 import java.lang.*;
 import java.util.*;
 
+/**
+ * Class representing a graph.
+ * //TODO more documentation
+ */
 public class Graph implements GraphInterface{
 
     /**
@@ -13,20 +17,19 @@ public class Graph implements GraphInterface{
     /**
      * Matrix containing the dinstances between nodes.
      */
-    protected final double[][] distanceMatrix;
+    protected final int[][] distanceMatrix;
 
     /**
      * Returns the distance matrix.
      */
-    public double[][] getDistanceMatrix(){
+    public int[][] getDistanceMatrix(){
         return distanceMatrix;
     }
 
     /**
      * Map containing the nodes with their x- and y-coordinate.
      */
-    //TODO Set to private
-    public final HashMap<Integer, Tuple<Double, Double>> nodes;
+    private final HashMap<Integer, Tuple<Double, Double>> nodes;
 
     /**
      * Return the nodes of the graph.
@@ -57,7 +60,6 @@ public class Graph implements GraphInterface{
         return dimension;
     }
 
-    //TODO return veranderen naar double, mag dat?
     @Override
     public int getDistance(int i, int j) {
         return (int) distanceMatrix[i-1][j-1];

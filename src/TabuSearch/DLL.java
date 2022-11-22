@@ -79,24 +79,6 @@ public class DLL implements DLLInterface {
             return Node2;
         }
 
-        //TODO delete setNode if never used
-        /**
-         * Set Node1 to the given node.
-         * @param newNode The new Node1.
-         */
-        public void setNode1(DLL.Node newNode){
-            Node1 = newNode;
-        }
-
-        //TODO delete setNode if never used
-        /**
-         * Set Node2 tp the given node.
-         * @param newNode The new Node2.
-         */
-        public void setNode2(DLL.Node newNode){
-            Node2 = newNode;
-        }
-
         /**
          * Initializes a new node with given element and 2 linked nodes.
          * @param element The element of the node.
@@ -150,6 +132,19 @@ public class DLL implements DLLInterface {
     @Override
     public boolean isEmpty() {
         return size == 0;
+    }
+
+    /**
+     * Copies all the elements from the given dll.
+     * @param dll The dll we want to copy.
+     */
+    protected void makeDeepCopyOf(DLL dll){
+        int sizeOfDll = dll.size;
+        this.removeAll();
+        List<Integer> elements = dll.getElements();
+        for (int i=0; i < sizeOfDll; i++){
+            insertLast(elements.get(i));
+        }
     }
 
     @Override
@@ -324,9 +319,7 @@ public class DLL implements DLLInterface {
         }
     }
 
-    /**
-     * Removes all the elements from the DLL.
-     */
+    @Override
     public void removeAll(){
         head = null;
         tail = null;
@@ -342,11 +335,11 @@ public class DLL implements DLLInterface {
 
     /**
      * Preform a 2-opt move when the second element is the tail.
-     * @param bestMove The move to be performed.
+     * @param move The move to be performed.
      */
-    private void makeMove2_optWithJAtEnd(Tuple<Integer, Integer> bestMove){
-        int iValue = bestMove.x;
-        int jValue = bestMove.y;
+    private void makeMove2_optWithJAtEnd(Tuple<Integer, Integer> move){
+        int iValue = move.x;
+        int jValue = move.y;
         Node nodeI = searchWithoutRemove(iValue);
         Node nodeBefI = getNodeAtIndex(getIndexOf(iValue)-1);
         Node nodeJ = searchWithoutRemove(jValue);
@@ -361,11 +354,11 @@ public class DLL implements DLLInterface {
 
     /**
      * Preform a 2-opt move when the first element is the head.
-     * @param bestMove The move to be performed.
+     * @param move The move to be performed.
      */
-    private void makeMove2_optWithIAtBegin(Tuple<Integer, Integer> bestMove){
-        int iValue = bestMove.x;
-        int jValue = bestMove.y;
+    private void makeMove2_optWithIAtBegin(Tuple<Integer, Integer> move){
+        int iValue = move.x;
+        int jValue = move.y;
         Node nodeI = searchWithoutRemove(iValue);
         Node nodeJ = searchWithoutRemove(jValue);
         Node nodeAfterJ = getNodeAtIndex(getIndexOf(jValue)+1);
@@ -379,23 +372,24 @@ public class DLL implements DLLInterface {
     }
 
     @Override
-    public void makeMove2_opt(Tuple<Integer, Integer> bestMove){
+    public void makeMove2_opt(Tuple<Integer, Integer> move){
         int iValue;
         int jValue;
-        if (getIndexOf(bestMove.x) > getIndexOf(bestMove.y)){
-            iValue = bestMove.y;
-            jValue = bestMove.x;
+        if (getIndexOf(move.x) > getIndexOf(move.y)){
+            iValue = move.y;
+            jValue = move.x;
         }
         else{
-            iValue = bestMove.x;
-            jValue = bestMove.y;
+            iValue = move.x;
+            jValue = move.y;
         }
+        if (getIndexOf(jValue) == size -1 && getIndexOf(iValue) == 0) return;
         if (getIndexOf(jValue) == size - 1) {
-            makeMove2_optWithJAtEnd(bestMove);
+            makeMove2_optWithJAtEnd(move);
             return;
         }
         if (getIndexOf(iValue) == 0){
-            makeMove2_optWithIAtBegin(bestMove);
+            makeMove2_optWithIAtBegin(move);
             return;
         }
 

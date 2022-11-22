@@ -11,24 +11,24 @@ import static java.lang.Math.*;
 class FileReader implements FileReaderInterface{
 
     //Possible forms of distance given the coordinates
-    boolean ATT = false;
+    private boolean ATT = false;
 
-    boolean EUC_2D = false;
+    private boolean EUC_2D = false;
 
-    boolean GEO = false;
+    private boolean GEO = false;
 
-    boolean CEIL_2D = false;
+    private boolean CEIL_2D = false;
 
     //Possible matrix forms
-    boolean FULL_MATRIX =  false;
+    private boolean FULL_MATRIX =  false;
 
-    boolean UPPER_ROW = false;
+    private boolean UPPER_ROW = false;
 
-    boolean LOWER_ROW = false;
+    private boolean LOWER_ROW = false;
 
-    boolean UPPER_DIAG_ROW = false;
+    private boolean UPPER_DIAG_ROW = false;
 
-    boolean LOWER_DIAG_ROW = false;
+    private boolean LOWER_DIAG_ROW = false;
 
     /**
      * How many points are in the problem.
@@ -41,12 +41,12 @@ class FileReader implements FileReaderInterface{
     }
 
     /**
-     * Matrix containing the dinstances between nodes.
+     * Matrix containing the distances between nodes.
      */
-    private double[][] readerDistanceMatrix;
+    private int[][] readerDistanceMatrix;
 
     @Override
-    public double[][] getMatrix(){
+    public int[][] getMatrix(){
         return readerDistanceMatrix;
     }
 
@@ -150,8 +150,16 @@ class FileReader implements FileReaderInterface{
             for (int j = i + 1; j < readerDimension; j++) {
                 double xd = readerNodes.get(i+1).x - readerNodes.get(j+1).x;
                 double yd = readerNodes.get(i+1).y - readerNodes.get(j+1).y;
-                readerDistanceMatrix[i][j] = (int) (sqrt((xd * xd + yd * yd) / 10)) + 1;
-                readerDistanceMatrix[j][i] = (int) (sqrt((xd * xd + yd * yd) / 10)) + 1;
+                double rij = (sqrt((xd * xd + yd * yd)/10));
+                int tij = (int) Math.round(rij);
+                if (tij<rij){
+                    readerDistanceMatrix[i][j] = tij + 1;
+                    readerDistanceMatrix[j][i] = tij + 1;
+                }
+                else{
+                    readerDistanceMatrix[i][j] = tij;
+                    readerDistanceMatrix[j][i] = tij;
+                }
             }
         }
     }
@@ -164,8 +172,8 @@ class FileReader implements FileReaderInterface{
             for (int j = i + 1; j < readerDimension; j++) {
                 double xd = readerNodes.get(i+1).x - readerNodes.get(j+1).x;
                 double yd = readerNodes.get(i+1).y - readerNodes.get(j+1).y;
-                readerDistanceMatrix[i][j] = (double) (sqrt(xd * xd + yd * yd));
-                readerDistanceMatrix[j][i] = (double) (sqrt(xd * xd + yd * yd));
+                readerDistanceMatrix[i][j] = (int) Math.round((sqrt(xd * xd + yd * yd)));
+                readerDistanceMatrix[j][i] = (int) Math.round((sqrt(xd * xd + yd * yd)));
             }
         }
     }
@@ -310,7 +318,7 @@ class FileReader implements FileReaderInterface{
     private void fillMatrixFull_Matrix(ArrayList<Double> numbers){
         for (int i = 0; i < readerDimension; i++){
             for (int j = 0; j < readerDimension; j++){
-                readerDistanceMatrix[i][j] = numbers.get(i * readerDimension + j);
+                readerDistanceMatrix[i][j] = (int) (double) numbers.get(i * readerDimension + j);
             }
         }
     }
@@ -323,8 +331,8 @@ class FileReader implements FileReaderInterface{
         int counter = 0;
         for (int i = 0; i < readerDimension-1; i++){
             for (int j = i + 1; j < readerDimension; j++){
-                readerDistanceMatrix[i][j] = numbers.get(counter);
-                readerDistanceMatrix[j][i] = numbers.get(counter);
+                readerDistanceMatrix[i][j] = (int) (double) numbers.get(counter);
+                readerDistanceMatrix[j][i] = (int) (double) numbers.get(counter);
                 counter++;
             }
         }
@@ -338,8 +346,8 @@ class FileReader implements FileReaderInterface{
         int counter = 0;
         for (int i = 1; i < readerDimension; i++){
             for (int j = 0; j < i; j++){
-                readerDistanceMatrix[i][j] = numbers.get(counter);
-                readerDistanceMatrix[j][i] = numbers.get(counter);
+                readerDistanceMatrix[i][j] = (int) (double) numbers.get(counter);
+                readerDistanceMatrix[j][i] = (int) (double) numbers.get(counter);
                 counter++;
             }
         }
@@ -354,8 +362,8 @@ class FileReader implements FileReaderInterface{
         for (int i = 0; i < readerDimension; i++){
             for (int j = i; j < readerDimension; j++){
                 if (i != j){
-                    readerDistanceMatrix[i][j] = numbers.get(counter);
-                    readerDistanceMatrix[j][i] = numbers.get(counter);
+                    readerDistanceMatrix[i][j] = (int) (double) numbers.get(counter);
+                    readerDistanceMatrix[j][i] = (int) (double) numbers.get(counter);
                 }
                 counter++;
             }
@@ -371,14 +379,13 @@ class FileReader implements FileReaderInterface{
         for (int i = 0; i < readerDimension; i++){
             for (int j = 0; j < i+1; j++) {
                 if (i != j) {
-                    readerDistanceMatrix[i][j] = numbers.get(counter);
-                    readerDistanceMatrix[j][i] = numbers.get(counter);
+                    readerDistanceMatrix[i][j] = (int) (double) numbers.get(counter);
+                    readerDistanceMatrix[j][i] = (int) (double) numbers.get(counter);
                 }
                 counter++;
             }
         }
     }
-
 
     /**
      * Split a given line.
@@ -422,11 +429,11 @@ class FileReader implements FileReaderInterface{
             String[] arrayOfLine = nextLine.split(" ");
             if (Objects.equals(arrayOfLine[0], "DIMENSION")){
                 readerDimension = Integer.parseInt(arrayOfLine[2]);
-                readerDistanceMatrix = new double[readerDimension][readerDimension];
+                readerDistanceMatrix = new int[readerDimension][readerDimension];
             }
             else if (Objects.equals(arrayOfLine[0], "DIMENSION:")){
                 readerDimension = Integer.parseInt(arrayOfLine[1]);
-                readerDistanceMatrix = new double[readerDimension][readerDimension];
+                readerDistanceMatrix = new int[readerDimension][readerDimension];
             }
             else if (Objects.equals(arrayOfLine[0], "NODE_COORD_SECTION")){
                 readFileCoord_Section(fileName);

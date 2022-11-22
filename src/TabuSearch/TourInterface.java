@@ -2,21 +2,23 @@ package TabuSearch;
 
 import java.util.List;
 
+/**
+ * Interface for Tour.
+ * //TODO more documentation
+ */
 public interface TourInterface {
 
     /**
      * Returns an ordered list representing a tour of the graph. It should always contain all elements of the graph
      * exactly once in a specific order.
      */
-    List<Integer> getTour();
+    List<Integer> getDllList();
 
     /**
      * Returns the length of the tour. This is the sum of all distances between nodes i and j if j follows i in the list
      * given by getTour() or if i and j are the first and last element.
      */
     int getTourLength();
-
-
 
     //TODO: Extra aan interface, mag dit??
     /**
@@ -48,4 +50,24 @@ public interface TourInterface {
      * @return The amount of nodes in the tour.
      */
     int getAmountOfNodes();
+
+    /**
+     * Print the tour.
+     */
+    void printTour();
+
+    /**
+     * Returns the graph where the tour takes place.
+     */
+    Graph getGraph();
+
+    /**
+     * Returns the DLL.
+     */
+    DLL getDLL();
+
+    /**
+     * Returns a list containing the nodes of the tour (in order).
+     */
+    List<Integer> getElements();
 }

@@ -95,4 +95,9 @@ public interface DLLInterface {
      * @param elementOfNode The element of the node.
      */
     int getIndexOf(int elementOfNode);
+
+    /**
+     * Remove all the elements from the list
+     */
+    void removeAll();
 }

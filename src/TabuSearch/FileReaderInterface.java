@@ -12,7 +12,7 @@ public interface FileReaderInterface {
     /**
      * Returns the matrix representing the distances between nodes.
      */
-    double[][] getMatrix();
+    int[][] getMatrix();
 
     /**
      * Returns the nodes of the problem.
