@@ -338,8 +338,16 @@ public class DLL implements DLLInterface {
      * @param move The move to be performed.
      */
     private void makeMove2_optWithJAtEnd(Tuple<Integer, Integer> move){
-        int iValue = move.x;
-        int jValue = move.y;
+        int iValue;
+        int jValue;
+        if (getIndexOf(move.x) > getIndexOf(move.y)){
+            iValue = move.y;
+            jValue = move.x;
+        }
+        else{
+            iValue = move.x;
+            jValue = move.y;
+        }
         Node nodeI = searchWithoutRemove(iValue);
         Node nodeBefI = getNodeAtIndex(getIndexOf(iValue)-1);
         Node nodeJ = searchWithoutRemove(jValue);
@@ -357,8 +365,16 @@ public class DLL implements DLLInterface {
      * @param move The move to be performed.
      */
     private void makeMove2_optWithIAtBegin(Tuple<Integer, Integer> move){
-        int iValue = move.x;
-        int jValue = move.y;
+        int iValue;
+        int jValue;
+        if (getIndexOf(move.x) > getIndexOf(move.y)){
+            iValue = move.y;
+            jValue = move.x;
+        }
+        else{
+            iValue = move.x;
+            jValue = move.y;
+        }
         Node nodeI = searchWithoutRemove(iValue);
         Node nodeJ = searchWithoutRemove(jValue);
         Node nodeAfterJ = getNodeAtIndex(getIndexOf(jValue)+1);
@@ -383,7 +399,7 @@ public class DLL implements DLLInterface {
             iValue = move.x;
             jValue = move.y;
         }
-        if (getIndexOf(jValue) == size -1 && getIndexOf(iValue) == 0) return;
+        if (getIndexOf(jValue) == size - 1 && getIndexOf(iValue) == 0) return;
         if (getIndexOf(jValue) == size - 1) {
             makeMove2_optWithJAtEnd(move);
             return;
