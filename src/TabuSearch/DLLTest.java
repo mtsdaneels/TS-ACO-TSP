@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 //TODO documentation
@@ -302,113 +301,5 @@ public class DLLTest {
         Assert.assertNull(dllList.getHead());
         Assert.assertNull(dllList.getTail());
         Assert.assertEquals(0, dllList.getSize());
-    }
-
-    @Test
-    public void testMakeMove2_opt1(){
-        Assert.assertNull(dllList.getHead());
-        Assert.assertNull(dllList.getTail());
-        for (int i=1; i<=6; i++){
-            dllList.insertLast(i);
-        }
-        List list = dllList.getElements();
-        for (int i=1; i<=6; i++){
-            Assert.assertEquals(i, list.get(i-1));
-        }
-        dllList.makeMove2_opt(new Tuple<Integer, Integer>(2, 5));
-        list = dllList.getElements();
-        Assert.assertEquals(1, list.get(0));
-        Assert.assertEquals(5, list.get(1));
-        Assert.assertEquals(4, list.get(2));
-        Assert.assertEquals(3, list.get(3));
-        Assert.assertEquals(2, list.get(4));
-        Assert.assertEquals(6, list.get(5));
-    }
-
-    @Test
-    public void testMakeMove2_opt2(){
-        Assert.assertNull(dllList.getHead());
-        Assert.assertNull(dllList.getTail());
-        dllList.insertFirst(5);
-        dllList.insertFirst(10);
-        dllList.insertFirst(8);
-        dllList.insertFirst(3);
-        dllList.insertFirst(9);
-        dllList.insertFirst(1);
-        dllList.insertFirst(4);
-        dllList.insertFirst(7);
-        dllList.insertFirst(6);
-        dllList.insertFirst(2);
-        //dllList = [2,6,7,4,1,9,3,8,10,5]
-        dllList.makeMove2_opt(new Tuple<Integer, Integer>(8,6));
-        List list = dllList.getElements();
-        Assert.assertEquals(2, list.get(0));
-        Assert.assertEquals(8, list.get(1));
-        Assert.assertEquals(3, list.get(2));
-        Assert.assertEquals(9, list.get(3));
-        Assert.assertEquals(1, list.get(4));
-        Assert.assertEquals(4, list.get(5));
-        Assert.assertEquals(7, list.get(6));
-        Assert.assertEquals(6, list.get(7));
-        Assert.assertEquals(10, list.get(8));
-        Assert.assertEquals(5, list.get(9));
-    }
-
-    @Test
-    public void testMakeMove2_opt3(){
-        Assert.assertNull(dllList.getHead());
-        Assert.assertNull(dllList.getTail());
-        dllList.insertFirst(5);
-        dllList.insertFirst(10);
-        dllList.insertFirst(8);
-        dllList.insertFirst(3);
-        dllList.insertFirst(9);
-        dllList.insertFirst(1);
-        dllList.insertFirst(4);
-        dllList.insertFirst(7);
-        dllList.insertFirst(6);
-        dllList.insertFirst(2);
-        //dllList = [2,6,7,4,1,9,3,8,10,5]
-        dllList.makeMove2_opt(new Tuple<Integer, Integer>(2,8));
-        List list = dllList.getElements();
-        Assert.assertEquals(8, list.get(0));
-        Assert.assertEquals(3, list.get(1));
-        Assert.assertEquals(9, list.get(2));
-        Assert.assertEquals(1, list.get(3));
-        Assert.assertEquals(4, list.get(4));
-        Assert.assertEquals(7, list.get(5));
-        Assert.assertEquals(6, list.get(6));
-        Assert.assertEquals(2, list.get(7));
-        Assert.assertEquals(10, list.get(8));
-        Assert.assertEquals(5, list.get(9));
-    }
-
-    @Test
-    public void testMakeMove2_opt4(){
-        Assert.assertNull(dllList.getHead());
-        Assert.assertNull(dllList.getTail());
-        dllList.insertFirst(5);
-        dllList.insertFirst(10);
-        dllList.insertFirst(8);
-        dllList.insertFirst(3);
-        dllList.insertFirst(9);
-        dllList.insertFirst(1);
-        dllList.insertFirst(4);
-        dllList.insertFirst(7);
-        dllList.insertFirst(6);
-        dllList.insertFirst(2);
-        //dllList = [2,6,7,4,1,9,3,8,10,5]
-        dllList.makeMove2_opt(new Tuple<Integer, Integer>(7,5));
-        List list = dllList.getElements();
-        Assert.assertEquals(2, list.get(0));
-        Assert.assertEquals(6, list.get(1));
-        Assert.assertEquals(5, list.get(2));
-        Assert.assertEquals(10, list.get(3));
-        Assert.assertEquals(8, list.get(4));
-        Assert.assertEquals(3, list.get(5));
-        Assert.assertEquals(9, list.get(6));
-        Assert.assertEquals(1, list.get(7));
-        Assert.assertEquals(4, list.get(8));
-        Assert.assertEquals(7, list.get(9));
     }
 }

@@ -26,7 +26,7 @@ public interface GraphInterface {
      * Returns the best tour (of the shortest length) found by your Tabu Search algorithm.
      * @param maxNumberOfIterations indicates the maximum number of iterations your algorithm is allowed to perform.
      */
-    Tour getTabuSearchBestTour(int maxNumberOfIterations);
+    Tour getTabuSearchBestTour(int maxNumberOfIterations) throws Exception;
 
     /**
      * Returns the best tour (of the shortest length) found by another chosen metaheuristic. It should be either a Genetic

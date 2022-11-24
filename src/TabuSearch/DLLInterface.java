@@ -73,12 +73,6 @@ public interface DLLInterface {
     DLL.Node getNodeAtIndex(int index);
 
     /**
-     * Preform a 2-opt move.
-     * @param bestMove The move to be performed.
-     */
-    void makeMove2_opt(Tuple<Integer, Integer> bestMove);
-
-    /**
      * Removes and returns the node from the DLL.
      * @param node The node we want to remove.
      */
@@ -100,4 +94,11 @@ public interface DLLInterface {
      * Remove all the elements from the list
      */
     void removeAll();
+
+    /**
+     * Searches and preforms the best possible two opt move for the given tabu search. The move gets added to the tabu list
+     * of the tabu search.
+     * @param tabuSearch The tabu search where the two opt takes place.
+     */
+    void preformBestTwo_OptMove(TabuSearch tabuSearch);
 }

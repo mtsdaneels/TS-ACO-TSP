@@ -95,14 +95,6 @@ public class Tour implements TourInterface {
     }
 
     /**
-     * Preforms the given 2-opt move.
-     * @param move The move we want to preform.
-     */
-    protected void makeMove2_opt(Tuple<Integer, Integer> move){
-        dllList.makeMove2_opt(move);
-    }
-
-    /**
      * Copies all the elements from the given tour.
      * @param tour The tour we want to copy.
      */

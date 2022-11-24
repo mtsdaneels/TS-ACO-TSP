@@ -7,6 +7,9 @@ import java.util.stream.IntStream;
 //TODO documentation
 public class TabuSearch implements  TabuSearchInterface{
 
+    /**
+     * The graph where the tabu search takes place.
+     */
     private final Graph graph;
 
     /**
@@ -65,6 +68,7 @@ public class TabuSearch implements  TabuSearchInterface{
      */
     List<Tuple<Integer, Integer>> tabuList;
 
+    //TODO bekijk voor efficiëntere manier:
     /**
      * Pointer to the head of the tabu list.
      */
@@ -86,9 +90,9 @@ public class TabuSearch implements  TabuSearchInterface{
      */
     public TabuSearch(Graph graph){
         this.graph = graph;
-        int factor = 1; //TODO bepalen factor
-        this.tabuList = Arrays.asList(new Tuple[graph.getNumberOfVertices()]);
+        double tabuListFactor = 0.25;
         this.dimension = graph.getNumberOfVertices();
+        this.tabuList = Arrays.asList(new Tuple[(int) (graph.getNumberOfVertices()* tabuListFactor)]);
         this.tour = new Tour(this.graph);
         this.bestTour = new Tour(this.graph);
     }
@@ -112,10 +116,9 @@ public class TabuSearch implements  TabuSearchInterface{
 
     /**
      * Make an initial solution in the tour variable using complete greedy algorithm.
-     * @throws Exception If the graph of the tabsearch has no vertices.
+     * @throws Exception If the graph of the tabu search has no vertices.
      */
     private void getInitialSolutionGreedy() throws Exception {
-        double shortestDistanceNext;
         int dimension = graph.getNumberOfVertices();
         if (dimension == 0){
             throw new Exception();
@@ -130,7 +133,7 @@ public class TabuSearch implements  TabuSearchInterface{
             nextIndex = getNextShortestAdd(possibleAds, nextNode);
             nextNode = possibleAds.get(nextIndex);
             tour.addLast(nextNode); //Add the node with the shortest length to the last one
-            possibleAds.remove(nextIndex);
+            possibleAds.remove(nextIndex); //Node that gets used is now not possible to add anymore
         }
         bestTour.makeDeepCopyOf(tour);
     }
@@ -144,7 +147,7 @@ public class TabuSearch implements  TabuSearchInterface{
         if (dimension == 0){
             throw new Exception();
         }
-        List<Integer> possibleAds = new java.util.ArrayList<>(IntStream.range(1, dimension+1).boxed().toList());
+        List<Integer> possibleAds = new java.util.ArrayList<>(IntStream.range(1, dimension+1).boxed().toList()); //Makes list between 1 and dimension
         int nextIndex = (int) (Math.random() * ((dimension -1)));
         int nextNode = possibleAds.get(nextIndex);
         tour.addLast(nextNode);
@@ -163,7 +166,8 @@ public class TabuSearch implements  TabuSearchInterface{
      * @param j The second node of the move.
      * @throws IllegalArgumentException If i <= j.
      */
-    private boolean tabuListContains(int i, int j){
+    //TODO is niet volledig efficient
+    protected boolean tabuListContains(int i, int j){
         if (i >= j) throw new IllegalArgumentException("i >= j is not allowed");
         int w = tabuListTail;
         while (w != tabuListHead){
@@ -172,7 +176,7 @@ public class TabuSearch implements  TabuSearchInterface{
                 return true;
             }
             w--;
-            if (w == -1) w = dimension-1;
+            if (w == -1) w = tabuList.size()-1;
         }
         return false;
     }
@@ -181,82 +185,21 @@ public class TabuSearch implements  TabuSearchInterface{
     public void addToTabuList(Tuple<Integer, Integer> move){
         tabuList.set(tabuListTail, move);
         tabuListHead++;
-        if (tabuListHead == dimension) tabuListHead = 0;
+        if (tabuListHead == tabuList.size()-1) tabuListHead = 0;
         tabuListTail++;
-        if (tabuListTail == dimension) tabuListTail = 0;
-    }
-
-    /**
-     * Calculate the cost reduction of a two opt move with the given indexes.
-     * @throws IllegalArgumentException If i >= j.
-     */
-    private double calculateCostReduction(int i, int j){
-        if (i >= j) throw new IllegalArgumentException("i >= j is not allowed");
-        List<Integer> elements = tour.getDLL().getElements();
-        if (i == 0 && j == dimension-1) return Double.NEGATIVE_INFINITY;
-        int indexBefI = i -1;
-        int indexAfterJ = j +1;
-        if (indexBefI == -1) indexBefI = dimension-1;
-        if (indexAfterJ == dimension) indexAfterJ = 0;
-        if (indexBefI == indexAfterJ) return Double.NEGATIVE_INFINITY;
-        if (!(i==1 && j==dimension)){
-            return +graph.getDistance(elements.get(indexBefI), elements.get(i)) +graph.getDistance(elements.get(j), elements.get(indexAfterJ))
-                    -graph.getDistance(elements.get(indexBefI), elements.get(j)) - graph.getDistance(elements.get(i), elements.get(indexAfterJ));
-        }
-        return 0;
-    }
-
-    /**
-     * Calculates the best two-opt move at that point.
-     * @return The best two-opt move possible at that point.
-     */
-    private Tuple<Integer,Integer> getBestTwo_OptMove(){
-        Tuple<Integer, Integer> bestMove = null;
-        List<Integer> elements = tour.getElements();
-        double bestCostReduction = Double.NEGATIVE_INFINITY;
-        double posCostReduction;
-
-        for (int i=0; i<dimension-1; i++){
-            for (int j=i+1; j<dimension; j++){
-                posCostReduction = calculateCostReduction(i, j);
-                //TODO aspiration citeria bijvoegen
-                int nodeI = elements.get(i);
-                int nodeJ = elements.get(j);
-                if (nodeI >= nodeJ){
-                    int temp = nodeI;
-                    nodeI = nodeJ;
-                    nodeJ = temp;
-                }
-                if ((posCostReduction > bestCostReduction && !tabuListContains(nodeI, nodeJ))){ //NOTE always nodeI < nodeJ
-                    bestCostReduction = posCostReduction;
-                    bestMove = new Tuple<>(nodeI, nodeJ);
-                }
-            }
-        }
-        return bestMove;
-    }
-
-    /**
-     * Preforms a two-opt move.
-     * @param move A tuple with the 2 nodes that should get switched in the tour.
-     */
-    private void makeMove2_opt(Tuple<Integer, Integer> move){
-        tour.makeMove2_opt(move);
-        addToTabuList(move);
+        if (tabuListTail == tabuList.size()-1) tabuListTail = 0;
     }
 
     @Override
     public Tour getSolutionTour() throws Exception {
         getInitialSolutionGreedy();
-        Tuple<Integer, Integer> bestMove = getBestTwo_OptMove();
-        for (int n=0; n<500; n++){
-            makeMove2_opt(bestMove);
+        for (int n=0; n<10000; n++){
+            tour.getDLL().preformBestTwo_OptMove(this);
             //TODO kan dit sneller berekent worden?
             if (tour.getTourLength() < bestTour.getTourLength()){
                 bestTour.makeDeepCopyOf(tour);
                 currentBestTourLength = bestTour.getTourLength();
             }
-            bestMove = getBestTwo_OptMove();
         }
         return bestTour;
     }

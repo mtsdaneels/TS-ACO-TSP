@@ -67,8 +67,9 @@ public class Graph implements GraphInterface{
 
     //TODO
     @Override
-    public Tour getTabuSearchBestTour(int maxNumberOfIterations) {
-        return null;
+    public Tour getTabuSearchBestTour(int maxNumberOfIterations) throws Exception {
+        TabuSearch tabuSearch = new TabuSearch(this);
+        return tabuSearch.getSolutionTour();
     }
 
     //TODO
