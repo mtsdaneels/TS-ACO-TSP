@@ -38,11 +38,6 @@ public class TabuSearch implements  TabuSearchInterface{
      */
     private Tour bestTour;
 
-    @Override
-    public Tour getBestTour(){
-        return bestTour;
-    }
-
     /**
      * Dimension of the problem.
      */

@@ -24,11 +24,6 @@ public interface HeuristicInterface {
     int getDimension();
 
     /**
-     * Returns the best tour found by tabu search at the moment.
-     */
-    Tour getBestTour();
-
-    /**
      * Returns current best tour length.
      */
     int getCurrentBestTourLength();
