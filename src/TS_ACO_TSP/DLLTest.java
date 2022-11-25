@@ -1,4 +1,4 @@
-package TabuSearch;
+package TS_ACO_TSP;
 
 import org.junit.Assert;
 import org.junit.Before;

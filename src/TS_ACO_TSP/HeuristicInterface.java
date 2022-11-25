@@ -1,4 +1,4 @@
-package TabuSearch;
+package TS_ACO_TSP;
 
 public interface HeuristicInterface {
 
@@ -22,9 +22,4 @@ public interface HeuristicInterface {
      * Returns the dimension of the problem.
      */
     int getDimension();
-
-    /**
-     * Returns current best tour length.
-     */
-    int getCurrentBestTourLength();
 }

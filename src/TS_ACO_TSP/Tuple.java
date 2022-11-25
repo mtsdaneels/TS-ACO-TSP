@@ -1,4 +1,4 @@
-package TabuSearch;
+package TS_ACO_TSP;
 
 /**
  * Class representing a tuple from class X and class Y.

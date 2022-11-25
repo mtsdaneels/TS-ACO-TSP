@@ -1,4 +1,4 @@
-package TabuSearch;
+package TS_ACO_TSP;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,8 +53,10 @@ public class TabuSearch implements  TabuSearchInterface{
      */
     private int currentBestTourLength;
 
-    @Override
-    public int getCurrentBestTourLength(){
+    /**
+     * Returns the length of the current best tour found.
+     */
+    private int getCurrentBestTourLength(){
         return currentBestTourLength;
     }
 
@@ -188,7 +190,7 @@ public class TabuSearch implements  TabuSearchInterface{
     @Override
     public Tour getSolutionTour() throws Exception {
         getInitialSolutionGreedy();
-        for (int n=0; n<10000; n++){
+        for (int n=0; n<1000; n++){
             tour.getDLL().preformBestTwo_OptMove(this);
             //TODO kan dit sneller berekent worden?
             if (tour.getTourLength() < bestTour.getTourLength()){

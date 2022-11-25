@@ -1,4 +1,4 @@
-package TabuSearch;
+package TS_ACO_TSP;
 
 import java.io.*;
 import java.util.*;
