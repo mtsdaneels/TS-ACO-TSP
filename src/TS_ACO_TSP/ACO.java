@@ -17,7 +17,7 @@ public class ACO implements ACOInterface{
     /**
      * Constant holding the evaporation rate.
      */
-    private final double RHO = 0.8;
+    private final double RHO = 0.9;
 
     /**
      * Returns the RHO.
@@ -121,9 +121,10 @@ public class ACO implements ACOInterface{
      * Set up the pheromone by putting 1 in every slot of the pheromone matrix.
      */
     private void setupPheromone(){
+        double initialNumber = 1.0/getDimension();
         for (int i=0; i<getDimension(); i++){
             for (int j=0; j<getDimension(); j++){
-                pheromoneMatrix[i][j] = 1;
+                pheromoneMatrix[i][j] = initialNumber;
             }
         }
     }
@@ -164,13 +165,11 @@ public class ACO implements ACOInterface{
      */
     private Tour calculateFinalTour() throws Exception {
         return tour;
-        //Ant finalAnt = new Ant(this);
-        //return finalAnt.getTour();
     }
 
     @Override
     public Tour getSolutionTour() throws Exception {
-        for (int n=0; n<5; n++) {
+        for (int n=0; n<20; n++) {
             generateAnts();
             for (int i = 0; i < getDimension(); i++) {
                 for (int j = i + 1; j < getDimension(); j++) {

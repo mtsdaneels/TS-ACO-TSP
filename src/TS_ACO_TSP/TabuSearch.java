@@ -2,6 +2,7 @@ package TS_ACO_TSP;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 //TODO documentation
@@ -155,6 +156,7 @@ public class TabuSearch implements  TabuSearchInterface{
             tour.addLast(nextNode);
             possibleAds.remove(nextIndex);
         }
+        bestTour.makeDeepCopyOf(tour);
     }
 
     /**
@@ -165,6 +167,11 @@ public class TabuSearch implements  TabuSearchInterface{
      */
     //TODO is niet volledig efficient
     protected boolean tabuListContains(int i, int j){
+        if (i > j ){
+            int temp = i;
+            i = j;
+            j = temp;
+        }
         if (i >= j) throw new IllegalArgumentException("i >= j is not allowed");
         int w = tabuListTail;
         while (w != tabuListHead){
@@ -179,19 +186,142 @@ public class TabuSearch implements  TabuSearchInterface{
     }
 
     @Override
-    public void addToTabuList(Tuple<Integer, Integer> move){
-        tabuList.set(tabuListTail, move);
+    public void addToTabuList(Tuple<Integer, Integer> move){ //NOTE tabuList only contains moves where move.getX() < move.getY()
+        if (Objects.equals(move.getX(), move.getY())) throw new IllegalArgumentException("i == j is not allowed");
+        if (move.getX() < move.getY()) tabuList.set(tabuListTail, move);
+        else tabuList.set(tabuListTail, new Tuple<Integer, Integer>(move.getY(), move.getX()));
         tabuListHead++;
         if (tabuListHead == tabuList.size()-1) tabuListHead = 0;
         tabuListTail++;
         if (tabuListTail == tabuList.size()-1) tabuListTail = 0;
     }
 
+    /**
+     * Calculate the possible reduction of a two-opt move with given nodes.
+     * @param nodeBefI The node before node i.
+     * @param nodeI Node i.
+     * @param nodeJ Node j.
+     * @param nodeAfterJ The node after node j.
+     * @return The possible reduction of a two-opt move between node i and node j.
+     */
+    protected double getCostReduction(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
+        return graph.getDistance(nodeBefI.getElement(), nodeI.getElement()) +graph.getDistance(nodeJ.getElement(), nodeAfterJ.getElement())
+                -graph.getDistance(nodeBefI.getElement(), nodeJ.getElement()) - graph.getDistance(nodeI.getElement(), nodeAfterJ.getElement());
+    }
+
+    /**
+     * Make a two opt move between node i and node j when node j is the last node of the list.
+     * @param nodeBefI The node before node i.
+     * @param nodeI Node i.
+     * @param nodeJ Node j.
+     */
+    private void makeMove2_optWithJAtEnd(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ){
+        //NOTE Extra check if needed.
+        /* if (getIndexOf(nodeI.getElement()) >= getIndexOf(nodeJ.getElement())){
+            throw new IllegalArgumentException("getIndex(nodeI) >= getIndex(nodeJ) is not allowed!");
+        } */
+        //Change of node i-1
+        nodeBefI.changeNodeTo(nodeI, nodeJ);
+        //Change of node i
+        nodeI.changeNodeTo(nodeBefI, null);
+        //Change of node j
+        nodeJ.changeNodeTo(null, nodeBefI);
+        tour.getDLL().setTail(nodeI);
+    }
+
+    /**
+     * Make a two opt move between node i and node j when node i is the first node of the list.
+     * @param nodeI Node i.
+     * @param nodeJ Node j.
+     * @param nodeAfterJ The node after node j.
+     */
+    //NOTE The node before node i is not given because it will always be the tail of the list.
+    private void makeMove2_optWithIAtBegin(DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
+        //NOTE Extra check if needed.
+        /* if (getIndexOf(nodeI.getElement()) >= getIndexOf(nodeJ.getElement())){
+            throw new IllegalArgumentException("getIndex(nodeI) >= getIndex(nodeJ) is not allowed!");
+        } */
+        //Change of node i
+        nodeI.changeNodeTo(null, nodeAfterJ);
+        //Change of node j
+        nodeJ.changeNodeTo(nodeAfterJ, null);
+        //Change of node j+1
+        nodeAfterJ.changeNodeTo(nodeJ, nodeI);
+        tour.getDLL().setHead(nodeJ);
+    }
+
+    /**
+     * Make a two-opt move between node i and node j. Index of node i must be smaller that index of node j.
+     * @param nodeBefI The node before node i.
+     * @param nodeI Node i.
+     * @param nodeJ Node j.
+     * @param nodeAfterJ The node after node j.
+     */
+    private void makeMove2_opt(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
+        if (nodeJ == tour.getLastNode() && nodeI == tour.getFirstNode()) return; //NOTE This does not change the tour, so we do not preform this one.
+        if (nodeJ == tour.getLastNode()){
+            makeMove2_optWithJAtEnd(nodeBefI, nodeI, nodeJ);
+            return;
+        }
+        if (nodeI == tour.getFirstNode()){
+            makeMove2_optWithIAtBegin(nodeI, nodeJ, nodeAfterJ);
+            return;
+        }
+        //Change of node i-1
+        nodeBefI.changeNodeTo(nodeI, nodeJ);
+        //Change of node i
+        nodeI.changeNodeTo(nodeBefI, nodeAfterJ);
+        //Change of node j
+        nodeJ.changeNodeTo(nodeAfterJ, nodeBefI);
+        //Change of node j+1
+        nodeAfterJ.changeNodeTo(nodeJ, nodeI);
+    }
+
+    /**
+     * Calculate and preform the best two-opt move.
+     */
+    private void preformBestTwo_OptMove(){
+        //Declaring local variables
+        double bestCostReduction = Double.NEGATIVE_INFINITY, posCostReduction = Double.NEGATIVE_INFINITY;
+        Tuple<Integer, Integer> bestMove = new Tuple<Integer, Integer>(-1,-1);
+        DLL.Node temp, nodeJ, nodeAfterJ, nodeBefI = null, nodeI = tour.getFirstNode();
+        FourTuple fourTuple = new FourTuple(null, null, null, null);
+
+        //Checking every two-opt
+        for (int i=0; i<getDimension()-2; i++){
+            nodeJ = tour.getNext(nodeI,nodeBefI);
+            nodeAfterJ = tour.getNext(nodeJ,nodeI);
+            for (int j=i+1; j<= getDimension()-1; j++){
+                if (i==0 && j== getDimension()-1) break;
+                else if (i==0) posCostReduction = getCostReduction(tour.getLastNode(), nodeI, nodeJ, nodeAfterJ);
+                else if (j==getDimension()-1) posCostReduction = getCostReduction(nodeBefI, nodeI, nodeJ, tour.getFirstNode());
+                else posCostReduction = getCostReduction(nodeBefI, nodeI, nodeJ, nodeAfterJ);
+                //TODO aspiration criteria
+                if (posCostReduction > bestCostReduction && !tabuListContains(nodeI.getElement(), nodeJ.getElement())){
+                    bestCostReduction = posCostReduction;
+                    bestMove = new Tuple<Integer, Integer>(nodeI.getElement(), nodeJ.getElement());
+                    if (i==0) fourTuple = new FourTuple(tour.getLastNode(), nodeI, nodeJ, nodeAfterJ);
+                    else if (j==getDimension()-1) fourTuple = new FourTuple(nodeBefI, nodeI, nodeJ, nodeAfterJ);
+                    else fourTuple = new FourTuple(nodeBefI, nodeI, nodeJ, nodeAfterJ);
+                }
+                if (j == getDimension()-1) break;
+                temp = nodeJ;
+                nodeJ = nodeAfterJ;
+                nodeAfterJ = tour.getNext(nodeJ,temp);
+            }
+            temp = nodeI;
+            nodeI = tour.getNext(nodeI,nodeBefI);
+            nodeBefI = temp;
+        }
+        makeMove2_opt(fourTuple.getNodeBefI(), fourTuple.getNodeI(), fourTuple.getNodeJ(), fourTuple.getNodeAfterJ());
+        addToTabuList(bestMove);
+    }
+
     @Override
     public Tour getSolutionTour() throws Exception {
         getInitialSolutionGreedy();
         for (int n=0; n<1000; n++){
-            tour.getDLL().preformBestTwo_OptMove(this);
+            preformBestTwo_OptMove();
             //TODO kan dit sneller berekent worden?
             if (tour.getTourLength() < bestTour.getTourLength()){
                 bestTour.makeDeepCopyOf(tour);

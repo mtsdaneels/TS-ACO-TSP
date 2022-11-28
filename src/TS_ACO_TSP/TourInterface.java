@@ -70,4 +70,14 @@ public interface TourInterface {
      * Returns a list containing the nodes of the tour (in order).
      */
     List<Integer> getElements();
+
+    /**
+     * Returns the first node of the tour.
+     */
+    DLL.Node getFirstNode();
+
+    /**
+     * Returns the last node of the tour.
+     */
+    DLL.Node getLastNode();
 }

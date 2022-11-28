@@ -95,6 +95,26 @@ public class Tour implements TourInterface {
     }
 
     /**
+     * Returns the next node when given the previous.
+     * @param node The node we want to know the next from.
+     * @param prev The previous node.
+     * @return The next node.
+     */
+    protected DLL.Node getNext(DLL.Node node, DLL.Node prev){
+        return dllList.getNext(node, prev);
+    }
+
+    @Override
+    public DLL.Node getFirstNode(){
+        return dllList.getHead();
+    }
+
+    @Override
+    public DLL.Node getLastNode(){
+        return dllList.getTail();
+    }
+
+    /**
      * Copies all the elements from the given tour.
      * @param tour The tour we want to copy.
      */

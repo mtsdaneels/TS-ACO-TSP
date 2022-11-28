@@ -96,9 +96,13 @@ public interface DLLInterface {
     void removeAll();
 
     /**
-     * Searches and preforms the best possible two opt move for the given tabu search. The move gets added to the tabu list
-     * of the tabu search.
-     * @param tabuSearch The tabu search where the two opt takes place.
+     * Set the head of the list to the given node.
      */
-    void preformBestTwo_OptMove(TabuSearch tabuSearch);
+    void setHead(DLL.Node node);
+
+    /**
+     * Set the tail of the list to the given node.
+     */
+    void setTail(DLL.Node node);
+
 }
