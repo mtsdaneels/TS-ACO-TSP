@@ -1,5 +1,7 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.DLLInterface;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -116,12 +118,7 @@ public class DLL implements DLLInterface {
         }
     }
 
-    /**
-     * Returns the next node when given the previous.
-     * @param node The node we want to know the next from.
-     * @param prev The previous node.
-     * @return The next node.
-     */
+    @Override
     public DLL.Node getNext(DLL.Node node, DLL.Node prev){
         if (node == tail) {
             return head;
@@ -153,7 +150,7 @@ public class DLL implements DLLInterface {
      * Copies all the elements from the given dll.
      * @param dll The dll we want to copy.
      */
-    protected void makeDeepCopyOf(DLL dll){
+    public void makeDeepCopyOf(DLL dll){
         int sizeOfDll = dll.size;
         this.removeAll();
         List<Integer> elements = dll.getElements();

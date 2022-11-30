@@ -1,9 +1,12 @@
-package TS_ACO_TSP;
+package TS_ACO_TSP.Interfaces;
+
+import TS_ACO_TSP.DLL;
+import TS_ACO_TSP.Graph;
 
 import java.util.List;
 
 /**
- * Interface for Tour.
+ * Interfaces for Tour.
  * //TODO more documentation
  */
 public interface TourInterface {

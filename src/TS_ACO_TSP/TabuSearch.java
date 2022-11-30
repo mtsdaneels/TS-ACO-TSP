@@ -1,12 +1,14 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.TabuSearchInterface;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
 //TODO documentation
-public class TabuSearch implements  TabuSearchInterface{
+public class TabuSearch implements TabuSearchInterface {
 
     /**
      * The graph where the tabu search takes place.
@@ -52,7 +54,7 @@ public class TabuSearch implements  TabuSearchInterface{
     /**
      * The length of the current tour.
      */
-    private int currentBestTourLength;
+    private int currentBestTourLength = (int) Double.POSITIVE_INFINITY;
 
     /**
      * Returns the length of the current best tour found.
@@ -205,6 +207,7 @@ public class TabuSearch implements  TabuSearchInterface{
      * @return The possible reduction of a two-opt move between node i and node j.
      */
     protected double getCostReduction(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
+        if (nodeI == tour.getFirstNode()) nodeBefI = tour.getLastNode();
         return graph.getDistance(nodeBefI.getElement(), nodeI.getElement()) +graph.getDistance(nodeJ.getElement(), nodeAfterJ.getElement())
                 -graph.getDistance(nodeBefI.getElement(), nodeJ.getElement()) - graph.getDistance(nodeI.getElement(), nodeAfterJ.getElement());
     }
@@ -286,25 +289,17 @@ public class TabuSearch implements  TabuSearchInterface{
         Tuple<Integer, Integer> bestMove = new Tuple<Integer, Integer>(-1,-1);
         DLL.Node temp, nodeJ, nodeAfterJ, nodeBefI = null, nodeI = tour.getFirstNode();
         FourTuple fourTuple = new FourTuple(null, null, null, null);
-
         //Checking every two-opt
         for (int i=0; i<getDimension()-2; i++){
             nodeJ = tour.getNext(nodeI,nodeBefI);
             nodeAfterJ = tour.getNext(nodeJ,nodeI);
             for (int j=i+1; j<= getDimension()-1; j++){
-                if (i==0 && j== getDimension()-1) break;
-                else if (i==0) posCostReduction = getCostReduction(tour.getLastNode(), nodeI, nodeJ, nodeAfterJ);
-                else if (j==getDimension()-1) posCostReduction = getCostReduction(nodeBefI, nodeI, nodeJ, tour.getFirstNode());
-                else posCostReduction = getCostReduction(nodeBefI, nodeI, nodeJ, nodeAfterJ);
-                //TODO aspiration criteria
+                posCostReduction = getCostReduction(nodeBefI, nodeI, nodeJ, nodeAfterJ);
                 if (posCostReduction > bestCostReduction && !tabuListContains(nodeI.getElement(), nodeJ.getElement())){
                     bestCostReduction = posCostReduction;
                     bestMove = new Tuple<Integer, Integer>(nodeI.getElement(), nodeJ.getElement());
-                    if (i==0) fourTuple = new FourTuple(tour.getLastNode(), nodeI, nodeJ, nodeAfterJ);
-                    else if (j==getDimension()-1) fourTuple = new FourTuple(nodeBefI, nodeI, nodeJ, nodeAfterJ);
-                    else fourTuple = new FourTuple(nodeBefI, nodeI, nodeJ, nodeAfterJ);
+                    fourTuple = getFourTuple(nodeJ, nodeAfterJ, nodeBefI, nodeI);
                 }
-                if (j == getDimension()-1) break;
                 temp = nodeJ;
                 nodeJ = nodeAfterJ;
                 nodeAfterJ = tour.getNext(nodeJ,temp);
@@ -317,13 +312,26 @@ public class TabuSearch implements  TabuSearchInterface{
         addToTabuList(bestMove);
     }
 
+    /**
+     * Help function for preformBestTwo_OptMove, creates and returs a fourTuple.
+     * @param nodeJ The second node of the fourTuple.
+     * @param nodeAfterJ The fourth node of the fourTuple.
+     * @param nodeBefI The first node of the fourTuple.
+     * @param nodeI The second node of the fourTuple.
+     */
+    private FourTuple getFourTuple(DLL.Node nodeJ, DLL.Node nodeAfterJ, DLL.Node nodeBefI, DLL.Node nodeI) {
+        FourTuple fourTuple;
+        if (nodeI == tour.getFirstNode()) fourTuple = new FourTuple(tour.getLastNode(), nodeI, nodeJ, nodeAfterJ);
+        else fourTuple = new FourTuple(nodeBefI, nodeI, nodeJ, nodeAfterJ);
+        return fourTuple;
+    }
+
     @Override
     public Tour getSolutionTour() throws Exception {
         getInitialSolutionGreedy();
         for (int n=0; n<1000; n++){
             preformBestTwo_OptMove();
-            //TODO kan dit sneller berekent worden?
-            if (tour.getTourLength() < bestTour.getTourLength()){
+            if (tour.getTourLength() < currentBestTourLength){
                 bestTour.makeDeepCopyOf(tour);
                 currentBestTourLength = bestTour.getTourLength();
             }

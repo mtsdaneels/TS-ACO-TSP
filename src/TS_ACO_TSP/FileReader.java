@@ -1,5 +1,7 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.FileReaderInterface;
+
 import java.io.*;
 import java.util.*;
 
@@ -8,7 +10,7 @@ import static java.lang.Math.*;
 /**
  * Class that reads a tsp file and interprets it as a tps problem.
  */
-class FileReader implements FileReaderInterface{
+public class FileReader implements FileReaderInterface {
 
     //Possible forms of distance given the coordinates
     private boolean ATT = false;

@@ -1,4 +1,7 @@
-package TS_ACO_TSP;
+package TS_ACO_TSP.Interfaces;
+
+import TS_ACO_TSP.Graph;
+import TS_ACO_TSP.Tour;
 
 public interface HeuristicInterface {
 

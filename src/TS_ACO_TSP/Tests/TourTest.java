@@ -1,5 +1,7 @@
-package TS_ACO_TSP;
+package TS_ACO_TSP.Tests;
 
+import TS_ACO_TSP.Graph;
+import TS_ACO_TSP.Tour;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,6 @@
-package TS_ACO_TSP;
+package TS_ACO_TSP.Interfaces;
+
+import TS_ACO_TSP.Tuple;
 
 import java.util.List;
 

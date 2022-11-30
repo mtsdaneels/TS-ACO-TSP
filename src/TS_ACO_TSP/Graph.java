@@ -1,5 +1,7 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.GraphInterface;
+
 import java.lang.*;
 import java.util.*;
 
@@ -7,7 +9,7 @@ import java.util.*;
  * Class representing a graph.
  * //TODO more documentation
  */
-public class Graph implements GraphInterface{
+public class Graph implements GraphInterface {
 
     /**
      * How many points are in the problem.

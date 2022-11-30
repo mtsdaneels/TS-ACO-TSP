@@ -1,9 +1,11 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.AntInterface;
+
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Ant implements AntInterface{
+public class Ant implements AntInterface {
 
     /**
      * List representing if an ant has visited a certain node. If index i != 0, it means the ant has visited node i-1.

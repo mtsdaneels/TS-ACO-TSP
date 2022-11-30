@@ -1,5 +1,7 @@
 package TS_ACO_TSP;
 
+import TS_ACO_TSP.Interfaces.TourInterface;
+
 import java.util.List;
 
 /**
@@ -87,7 +89,7 @@ public class Tour implements TourInterface {
     /**
      * Makes the tour canonical. The tour will be node 1, node 2, node 3, ...
      */
-    protected void makeCanonicalTour(){
+    public void makeCanonicalTour(){
         dllList.removeAll();
         for (int i = 1; i <= graph.getNumberOfVertices(); i++){
             dllList.insertLast(i);

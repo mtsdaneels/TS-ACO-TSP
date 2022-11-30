@@ -1,9 +1,11 @@
-package TS_ACO_TSP;
+package TS_ACO_TSP.Interfaces;
+
+import TS_ACO_TSP.DLL;
 
 import java.util.List;
 
 /**
- * Interface for a double linked list with integers as its elements.
+ * Interfaces for a double linked list with integers as its elements.
  */
 public interface DLLInterface {
 
@@ -104,5 +106,13 @@ public interface DLLInterface {
      * Set the tail of the list to the given node.
      */
     void setTail(DLL.Node node);
+
+    /**
+     * Returns the next node when given the previous.
+     * @param node The node we want to know the next from.
+     * @param prev The previous node.
+     * @return The next node.
+     */
+    DLL.Node getNext(DLL.Node node, DLL.Node prev);
 
 }

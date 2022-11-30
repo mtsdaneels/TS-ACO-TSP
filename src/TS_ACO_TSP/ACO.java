@@ -1,6 +1,8 @@
 package TS_ACO_TSP;
 
-public class ACO implements ACOInterface{
+import TS_ACO_TSP.Interfaces.ACOInterface;
+
+public class ACO implements ACOInterface {
 
     /**
      * Constant holding the influence of the length of the ant tour.
@@ -161,9 +163,8 @@ public class ACO implements ACOInterface{
     /**
      * Calculate the final tour with the information gained by simulating the ants.
      * @return The tour that was found best by the Ant Colony Optimization.
-     * @throws Exception
      */
-    private Tour calculateFinalTour() throws Exception {
+    private Tour calculateFinalTour() {
         return tour;
     }
 
