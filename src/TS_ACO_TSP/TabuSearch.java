@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-//TODO documentation
+/**
+ * Interface for TabuSearch.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public class TabuSearch implements TabuSearchInterface {
 
     /**
@@ -68,16 +73,15 @@ public class TabuSearch implements TabuSearchInterface {
      */
     List<Tuple<Integer, Integer>> tabuList;
 
-    //TODO bekijk voor efficiëntere manier:
     /**
      * Pointer to the head of the tabu list.
      */
-    private int tabuListHead = 1;
+    private int tabuListHead;
 
     /**
      * Pointer to the tail of the tabu list.
      */
-    private int tabuListTail = 0;
+    private int tabuListTail;
 
     @Override
     public List<Tuple<Integer, Integer>> getTabuList(){
@@ -95,6 +99,8 @@ public class TabuSearch implements TabuSearchInterface {
         this.tabuList = Arrays.asList(new Tuple[(int) (graph.getNumberOfVertices()* tabuListFactor)]);
         this.tour = new Tour(this.graph);
         this.bestTour = new Tour(this.graph);
+        this.tabuListHead = 0;
+        this.tabuListTail = tabuList.size()-1;
     }
 
     /**
@@ -165,19 +171,18 @@ public class TabuSearch implements TabuSearchInterface {
      * Returns whether the tabu list contains a move or not.
      * @param i The first node of the move.
      * @param j The second node of the move.
-     * @throws IllegalArgumentException If i <= j.
+     * @throws IllegalArgumentException If i == j.
      */
-    //TODO is niet volledig efficient
     protected boolean tabuListContains(int i, int j){
-        if (i > j ){
+        if (i > j){
             int temp = i;
             i = j;
             j = temp;
         }
-        if (i >= j) throw new IllegalArgumentException("i >= j is not allowed");
+        if (i == j) throw new IllegalArgumentException("i == j is not allowed");
         int w = tabuListTail;
         while (w != tabuListHead){
-            if (tabuList.get(w) == null);
+            if (tabuList.get(w) == null) break;
             else if (tabuList.get(w).getX() == i && tabuList.get(w).getY() == j){
                 return true;
             }
@@ -190,12 +195,12 @@ public class TabuSearch implements TabuSearchInterface {
     @Override
     public void addToTabuList(Tuple<Integer, Integer> move){ //NOTE tabuList only contains moves where move.getX() < move.getY()
         if (Objects.equals(move.getX(), move.getY())) throw new IllegalArgumentException("i == j is not allowed");
-        if (move.getX() < move.getY()) tabuList.set(tabuListTail, move);
-        else tabuList.set(tabuListTail, new Tuple<Integer, Integer>(move.getY(), move.getX()));
+        if (move.getX() < move.getY()) tabuList.set(tabuListHead, move);
+        else tabuList.set(tabuListHead, new Tuple<Integer, Integer>(move.getY(), move.getX()));
         tabuListHead++;
-        if (tabuListHead == tabuList.size()-1) tabuListHead = 0;
+        if (tabuListHead >= tabuList.size()) tabuListHead = 0;
         tabuListTail++;
-        if (tabuListTail == tabuList.size()-1) tabuListTail = 0;
+        if (tabuListTail >= tabuList.size()) tabuListTail = 0;
     }
 
     /**
@@ -331,7 +336,7 @@ public class TabuSearch implements TabuSearchInterface {
         getInitialSolutionGreedy();
         for (int n=0; n<1000; n++){
             preformBestTwo_OptMove();
-            if (tour.getTourLength() < currentBestTourLength){
+            if (tour.getTourLength() < getCurrentBestTourLength()){
                 bestTour.makeDeepCopyOf(tour);
                 currentBestTourLength = bestTour.getTourLength();
             }

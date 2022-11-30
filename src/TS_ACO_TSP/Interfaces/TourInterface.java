@@ -6,8 +6,10 @@ import TS_ACO_TSP.Graph;
 import java.util.List;
 
 /**
- * Interfaces for Tour.
- * //TODO more documentation
+ * Interface for Tour.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public interface TourInterface {
 
@@ -23,7 +25,6 @@ public interface TourInterface {
      */
     int getTourLength();
 
-    //TODO: Extra aan interface, mag dit??
     /**
      * Adds an element to the back of the tour.
      * @param element The element we want to add.

@@ -229,7 +229,6 @@ public class DLL implements DLLInterface {
         return temp;
     }
 
-    //TODO Function only gets used in tests
     @Override
     public DLL.Node search(int k) {
         if (size == 0){
@@ -290,7 +289,6 @@ public class DLL implements DLLInterface {
         return list;
     }
 
-    //TODO Function only gets used in tests
     @Override
     public DLL.Node getNodeAtIndex(int index){
         if (index >= size || index < 0){
@@ -313,7 +311,6 @@ public class DLL implements DLLInterface {
         return null;
     }
 
-    //TODO Fuction only gets used in tests
     @Override
     public int getIndexOf(int elementOfNode){
         Node solution = head;

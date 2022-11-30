@@ -6,8 +6,10 @@ import java.lang.*;
 import java.util.*;
 
 /**
- * Class representing a graph.
- * //TODO more documentation
+ * Interface for Graph.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class Graph implements GraphInterface {
 
@@ -67,16 +69,15 @@ public class Graph implements GraphInterface {
         return (int) distanceMatrix[i-1][j-1];
     }
 
-    //TODO
     @Override
     public Tour getTabuSearchBestTour(int maxNumberOfIterations) throws Exception {
         TabuSearch tabuSearch = new TabuSearch(this);
         return tabuSearch.getSolutionTour();
     }
 
-    //TODO
     @Override
-    public Tour getOtherHeuristicBestTour(int maxNumberOfIterations) {
-        return null;
+    public Tour getOtherHeuristicBestTour(int maxNumberOfIterations) throws Exception {
+        ACO aco = new ACO(this);
+        return aco.getSolutionTour();
     }
 }

@@ -35,7 +35,7 @@ public interface GraphInterface {
      * Algorithm, Simulated Annealing or Ant Colony Optimization.
      * @param maxNumberOfIterations indicated the maximum number of iterations your algorithm is allowed to perform.
      */
-    Tour getOtherHeuristicBestTour(int maxNumberOfIterations);
+    Tour getOtherHeuristicBestTour(int maxNumberOfIterations) throws Exception;
 
 
 }

@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-//TODO veel andere testen
 public class FileReaderTest {
 
     @Test

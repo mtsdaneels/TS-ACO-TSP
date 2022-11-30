@@ -140,7 +140,6 @@ public class Ant implements AntInterface {
         tour.addLast(nextNode);
         hasVisited[nextNode-1] = counter;
         possibleAds.remove(nextIndex);
-        //TODO betere tijdscomplexiteit mogelijk?
         while (!possibleAds.isEmpty()){
             counter++;
             nextIndex = getBestNextNode(possibleAds, nextNode);

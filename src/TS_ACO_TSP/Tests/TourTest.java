@@ -6,7 +6,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-//TODO documentation
+/**
+ * Test class for testing Tour.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public class TourTest {
 
     @Before

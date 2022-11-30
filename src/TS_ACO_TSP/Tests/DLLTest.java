@@ -7,7 +7,12 @@ import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
-//TODO documentation
+/**
+ * Test class for testing DLL.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public class DLLTest {
 
     DLL dllList;
