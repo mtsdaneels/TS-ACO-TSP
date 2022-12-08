@@ -34,11 +34,11 @@ Tour solutionTour = searchName.getSolutionTour();
 
 We can do a couple of things with the tour:
 ```
-solutionTour.getLength();
-solutionTour.getElements();
+int length = solutionTour.getLength();
+List<Integer> listOfElements = solutionTour.getElements();
 solutionTour.printTour();
 ```
 
 # General
 
-For some problems, the optimal tour with optimal tour length can be found in Dataset under the "form nameOfProblem.opt.tour".
+For some problems, the optimal tour with optimal tour length can be found in Dataset under the form "nameOfProblem.opt.tour".
