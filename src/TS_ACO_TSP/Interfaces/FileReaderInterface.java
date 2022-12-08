@@ -4,6 +4,12 @@ import TS_ACO_TSP.Tuple;
 
 import java.util.HashMap;
 
+/**
+ * Interface for FileReader.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public interface FileReaderInterface {
 
     /**

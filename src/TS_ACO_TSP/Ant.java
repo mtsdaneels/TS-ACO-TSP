@@ -5,6 +5,12 @@ import TS_ACO_TSP.Interfaces.AntInterface;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Class representing an ant.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public class Ant implements AntInterface {
 
     /**
@@ -12,21 +18,12 @@ public class Ant implements AntInterface {
      */
     private int[] hasVisited;
 
-    /**
-     * Returns true if and only if the ant has visited the node.
-     * @param node The number of the node.
-     * @return True if and only if the ant has visited the node.
-     */
-    public boolean HasVisited(int node){
+    @Override
+    public boolean hasVisited(int node){
         return 0 != hasVisited[node-1];
     }
 
-    /**
-     * Returns whether the ant has visited the edge i,j.
-     * @param i The number of the first node.
-     * @param j The number of the second node.
-     * @return Returns true if and only if the ant has visited the edge (i,j) or (j,i)
-     */
+    @Override
     public boolean hasVisitedEdge(int i, int j){
         return (Math.abs(hasVisited[i - 1] - hasVisited[j - 1]) == 1)
                 || Math.abs(hasVisited[i - 1] - hasVisited[j - 1]) == aco.getDimension() - 1;
@@ -35,21 +32,19 @@ public class Ant implements AntInterface {
     /**
      * Constant used to change the influence of the pheromone when choosing the path.
      */
-    private final double ALPHA = 1.0;
+    private final double ALPHA = 1;
 
     /**
      * Constant used to change the influence of the length of the edges when choosing the path.
      */
-    private final double BETA = 2.0;
+    private final double BETA = 2;
 
     /**
      * The tour of the ant.
      */
     private Tour tour;
 
-    /**
-     * Returns the tour of the ant.
-     */
+    @Override
     public Tour getTour(){
         return tour;
     }
@@ -59,9 +54,7 @@ public class Ant implements AntInterface {
      */
     private int tourLength;
 
-    /**
-     * Returns the length of the tour made by the ant.
-     */
+    @Override
     public int getTourLength(){
         return tourLength;
     }
@@ -71,9 +64,7 @@ public class Ant implements AntInterface {
      */
     private final Graph graph;
 
-    /**
-     * Returns the graph where the ant is in.
-     */
+    @Override
     public Graph getGraph(){
         return graph;
     }
@@ -90,6 +81,11 @@ public class Ant implements AntInterface {
         return aco;
     }
 
+    /**
+     * Constructor creating a new ant.
+     * @param aco The ant colony optimization the ant is in.
+     * @throws Exception
+     */
     public Ant(ACO aco) throws Exception {
         this.aco = aco;
         this.graph = aco.getGraph();
@@ -100,22 +96,21 @@ public class Ant implements AntInterface {
 
     /**
      * Get the best next node for the ant.
-     * @param possibleAds A list of the nodes that are still available.
+     * @param possibleAdds A list of the nodes that are still available.
      * @param prevNode The previous node that was added to the tour. (The ant is now in this node)
-     * @return The index of the next node in possibleAds.
+     * @return The index of the next node in possibleAdds.
      */
-    private int getBestNextNode(List<Integer> possibleAds, int prevNode){
+    private int getBestNextNode(List<Integer> possibleAdds, int prevNode){
         double bestProbability = Double.NEGATIVE_INFINITY, probability;
         int nextIndex = -1;
         double sommation = 0;
-        for (int i: possibleAds){
+        for (int i: possibleAdds){
             sommation += Math.pow(aco.getPheremone(prevNode, i), ALPHA)
                     * Math.pow( ( 1.0 / graph.getDistance(prevNode, i)) , BETA);
         }
-        if (sommation == 0) sommation = 1;
-        for (int j=0; j < possibleAds.size(); j++){
-            probability = ( (Math.pow(aco.getPheremone(prevNode, possibleAds.get(j)), ALPHA)
-                    * Math.pow( ( 1.0 / graph.getDistance(prevNode, possibleAds.get(j)) ), BETA) ) / sommation);
+        for (int j=0; j < possibleAdds.size(); j++){
+            probability = ( (Math.pow(aco.getPheremone(prevNode, possibleAdds.get(j)), ALPHA)
+                    * Math.pow( ( 1.0 / graph.getDistance(prevNode, possibleAdds.get(j)) ), BETA) ) / sommation);
             if (probability > bestProbability){
                 bestProbability = probability;
                 nextIndex = j;

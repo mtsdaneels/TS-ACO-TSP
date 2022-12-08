@@ -2,8 +2,12 @@ package TS_ACO_TSP;
 
 /**
  * Class representing a four tuple.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class FourTuple {
+
         /**
          * Node representing the node before node i.
          */
@@ -65,5 +69,4 @@ public class FourTuple {
             this.nodeJ = nodeJ;
             this.nodeAfterJ = nodeAfterJ;
         }
-
 }

@@ -4,6 +4,12 @@ import TS_ACO_TSP.Tour;
 
 import java.util.Collection;
 
+/**
+ * Interface for Graph.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public interface GraphInterface {
 
     /**

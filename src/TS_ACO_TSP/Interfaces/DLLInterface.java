@@ -6,6 +6,9 @@ import java.util.List;
 
 /**
  * Interfaces for a double linked list with integers as its elements.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public interface DLLInterface {
 
@@ -114,5 +117,16 @@ public interface DLLInterface {
      * @return The next node.
      */
     DLL.Node getNext(DLL.Node node, DLL.Node prev);
+
+    /**
+     * Copies all the elements from the given dll.
+     * @param dll The dll we want to copy.
+     */
+    void makeDeepCopyOf(DLL dll);
+
+    /**
+     * Print the tour.
+     */
+    void printTour();
 
 }

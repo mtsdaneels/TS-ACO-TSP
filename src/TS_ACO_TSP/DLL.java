@@ -8,6 +8,9 @@ import java.util.NoSuchElementException;
 
 /**
  * Class representing a double linked list with integers as the elements.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class DLL implements DLLInterface {
 
@@ -146,10 +149,7 @@ public class DLL implements DLLInterface {
         return size == 0;
     }
 
-    /**
-     * Copies all the elements from the given dll.
-     * @param dll The dll we want to copy.
-     */
+    @Override
     public void makeDeepCopyOf(DLL dll){
         int sizeOfDll = dll.size;
         this.removeAll();
@@ -338,10 +338,8 @@ public class DLL implements DLLInterface {
         size = 0;
     }
 
-    /**
-     * Print the tour.
-     */
-    protected void printTour(){
+    @Override
+    public void printTour(){
         System.out.println(getElements());
     }
 }

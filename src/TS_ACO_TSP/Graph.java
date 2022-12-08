@@ -6,7 +6,7 @@ import java.lang.*;
 import java.util.*;
 
 /**
- * Interface for Graph.
+ * Class representing a graph.
  *
  * @author Matias Daneels
  * @version 1.0
@@ -71,13 +71,13 @@ public class Graph implements GraphInterface {
 
     @Override
     public Tour getTabuSearchBestTour(int maxNumberOfIterations) throws Exception {
-        TabuSearch tabuSearch = new TabuSearch(this);
+        TabuSearch tabuSearch = new TabuSearch(this, maxNumberOfIterations);
         return tabuSearch.getSolutionTour();
     }
 
     @Override
     public Tour getOtherHeuristicBestTour(int maxNumberOfIterations) throws Exception {
-        ACO aco = new ACO(this);
+        ACO aco = new ACO(this, maxNumberOfIterations);
         return aco.getSolutionTour();
     }
 }

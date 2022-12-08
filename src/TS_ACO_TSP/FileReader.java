@@ -9,6 +9,9 @@ import static java.lang.Math.*;
 
 /**
  * Class that reads a tsp file and interprets it as a tps problem.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class FileReader implements FileReaderInterface {
 

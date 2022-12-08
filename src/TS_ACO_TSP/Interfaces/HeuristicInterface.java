@@ -3,6 +3,12 @@ package TS_ACO_TSP.Interfaces;
 import TS_ACO_TSP.Graph;
 import TS_ACO_TSP.Tour;
 
+/**
+ * Interface for a heuristic method.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public interface HeuristicInterface {
 
     /**
@@ -25,4 +31,9 @@ public interface HeuristicInterface {
      * Returns the dimension of the problem.
      */
     int getDimension();
+
+    /**
+     * Returns the maximum amount of iterations.
+     */
+    int getMaximumIterations();
 }

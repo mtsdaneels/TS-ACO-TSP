@@ -2,19 +2,18 @@ package TS_ACO_TSP;
 
 import TS_ACO_TSP.Interfaces.ACOInterface;
 
+/**
+ * Class simulating ant Ant Colony Optimization.
+ *
+ * @author Matias Daneels
+ * @version 1.0
+ */
 public class ACO implements ACOInterface {
 
     /**
      * Constant holding the influence of the length of the ant tour.
      */
-    private final double BIGQ = 1.0;
-
-    /**
-     * Returns the big q.
-     */
-    public double getBIGQ(){
-        return BIGQ;
-    }
+    private final double BIGQ = 0.3;
 
     /**
      * Constant holding the evaporation rate.
@@ -22,20 +21,23 @@ public class ACO implements ACOInterface {
     private final double RHO = 0.9;
 
     /**
-     * Returns the RHO.
-     */
-    public double getRHO(){
-        return RHO;
-    }
-
-    /**
      * Constant holding the size of every population.
      */
     private final int antPopSize = 20;
 
-    /**
-     * Returns the ant population size.
-     */
+
+    @Override
+    public double getBIGQ(){
+        return BIGQ;
+    }
+
+
+    @Override
+    public double getRHO(){
+        return RHO;
+    }
+
+    @Override
     public int getAntPopSize(){
         return antPopSize;
     }
@@ -45,9 +47,7 @@ public class ACO implements ACOInterface {
      */
     private double[][] pheromoneMatrix;
 
-    /**
-     * Returns the pheromone matrix.
-     */
+    @Override
     public double[][] getPheromoneMatrix(){
         return pheromoneMatrix;
     }
@@ -57,9 +57,7 @@ public class ACO implements ACOInterface {
      */
     private Ant[] ants;
 
-    /**
-     * Returns a list of ants of the iteration.
-     */
+    @Override
     public Ant[] getAnts(){
         return ants;
     }
@@ -68,6 +66,16 @@ public class ACO implements ACOInterface {
      * The graph where the ACO takes place.
      */
     private final Graph graph;
+
+    /**
+     * The maximum amount of iterations.
+     */
+    private final int maximumIterations;
+
+    @Override
+    public int getMaximumIterations(){
+        return maximumIterations;
+    }
 
     @Override
     public Graph getGraph() {
@@ -78,11 +86,12 @@ public class ACO implements ACOInterface {
      * Constructor initializing a new Ant Colony Optimization process in a given graph.
      * @param graph The graph where the Ant Colony Optimization takes place.
      */
-    public ACO(Graph graph){
+    public ACO(Graph graph, int maximumIterations){
         this.graph = graph;
         this.pheromoneMatrix = new double[getDimension()][getDimension()];
         setupPheromone();
         this.ants = new Ant[antPopSize];
+        this.maximumIterations = maximumIterations;
     }
 
     /**
@@ -107,12 +116,7 @@ public class ACO implements ACOInterface {
         return tour;
     }
 
-    /**
-     * Returns the pheromone on the edge (i,j).
-     * @param i The number of the first node of the edge.
-     * @param j The number of the second ndoe of the edge.
-     * @throws IllegalArgumentException If i == j, this is not allowed.
-     */
+    @Override
     public double getPheremone(int i, int j) {
         if (i<j) return pheromoneMatrix[i-1][j-1];
         else if (i>j) return pheromoneMatrix[j-1][i-1];
@@ -152,34 +156,42 @@ public class ACO implements ACOInterface {
             if (ant.hasVisitedEdge(i, j)){
                 deltaTou += getBIGQ()/ant.getTourLength();
             }
-            if (ant.getTourLength() < getTourLength()){
-                tour = ant.getTour();
-                tourLength = ant.getTourLength();
-            }
         }
         return deltaTou;
     }
 
     /**
-     * Calculate the final tour with the information gained by simulating the ants.
-     * @return The tour that was found best by the Ant Colony Optimization.
+     * Look through the ants and update if there is a better tour.
      */
-    private Tour calculateFinalTour() {
-        return tour;
+    private void updateBestTour() {
+        for (Ant ant: getAnts()){
+            if (ant.getTourLength() < getTourLength()){
+                tour = ant.getTour();
+                tourLength = ant.getTourLength();
+            }
+        }
     }
 
     @Override
     public Tour getSolutionTour() throws Exception {
-        for (int n=0; n<20; n++) {
+        for (int n=0; n<maximumIterations; n++) {
             generateAnts();
-            for (int i = 0; i < getDimension(); i++) {
-                for (int j = i + 1; j < getDimension(); j++) {
-                    double deltaTou = calculateDeltaTou(i + 1, j + 1); //NOTE The argument of calculateDeltaTou are the number of the nodes.
-                    pheromoneMatrix[i][j] = getRHO() * pheromoneMatrix[i][j] + deltaTou; //NOTE Update of the pheromone concentration.
-                }
+            updateBestTour();
+            updatePheremone();
+        }
+        return tour;
+    }
+
+    /**
+     * Update the pheremone matrix.
+     */
+    private void updatePheremone() {
+        for (int i = 0; i < getDimension(); i++) {
+            for (int j = i + 1; j < getDimension(); j++) {
+                double deltaTou = calculateDeltaTou(i + 1, j + 1); //The argument of calculateDeltaTou are the number of the nodes.
+                pheromoneMatrix[i][j] = getRHO() * pheromoneMatrix[i][j] + deltaTou; //Update of the pheromone concentration.
             }
         }
-        return calculateFinalTour();
     }
 
     @Override

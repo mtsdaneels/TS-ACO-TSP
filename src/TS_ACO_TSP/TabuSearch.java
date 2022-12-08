@@ -89,18 +89,29 @@ public class TabuSearch implements TabuSearchInterface {
     }
 
     /**
+     * Maximum number of iterations.
+     */
+    private final int maximumNumberOfIterations;
+
+    @Override
+    public int getMaximumIterations(){
+        return maximumNumberOfIterations;
+    }
+
+    /**
      * Constructor initializing a new tabu search instance.
      * @param graph The graph where the tabu search takes place.
      */
-    public TabuSearch(Graph graph){
+    public TabuSearch(Graph graph, int maximumNumberOfIterations){
         this.graph = graph;
-        double tabuListFactor = 0.25;
+        double tabuListFactor = 0.5;
         this.dimension = graph.getNumberOfVertices();
         this.tabuList = Arrays.asList(new Tuple[(int) (graph.getNumberOfVertices()* tabuListFactor)]);
         this.tour = new Tour(this.graph);
         this.bestTour = new Tour(this.graph);
         this.tabuListHead = 0;
         this.tabuListTail = tabuList.size()-1;
+        this.maximumNumberOfIterations = maximumNumberOfIterations;
     }
 
     /**
@@ -125,13 +136,12 @@ public class TabuSearch implements TabuSearchInterface {
      * @throws Exception If the graph of the tabu search has no vertices.
      */
     private void getInitialSolutionGreedy() throws Exception {
-        int dimension = graph.getNumberOfVertices();
-        if (dimension == 0){
+        if (getDimension() == 0){
             throw new Exception();
         }
         tour.getDLL().removeAll(); //Clear the tour
-        List<Integer> possibleAds = new java.util.ArrayList<>(IntStream.range(1, dimension+1).boxed().toList());
-        int nextIndex = (int) (Math.random() * ((dimension - 1))); //Start at a random node
+        List<Integer> possibleAds = new java.util.ArrayList<>(IntStream.range(1, getDimension() +1).boxed().toList());
+        int nextIndex = (int) (Math.random() * ((getDimension() - 1))); //Start at a random node
         int nextNode = possibleAds.get(nextIndex);
         tour.addLast(nextNode);
         possibleAds.remove(nextIndex);
@@ -146,7 +156,7 @@ public class TabuSearch implements TabuSearchInterface {
 
     /**
      * Make an initial solution in the tour variable using complete random choices.
-     * @throws Exception If the graph of the tabusearch has no vertices.
+     * @throws Exception If the graph of the tabu search has no vertices.
      */
     private void getInitialSolutionRandom() throws Exception {
         int dimension = graph.getNumberOfVertices();
@@ -173,7 +183,7 @@ public class TabuSearch implements TabuSearchInterface {
      * @param j The second node of the move.
      * @throws IllegalArgumentException If i == j.
      */
-    protected boolean tabuListContains(int i, int j){
+    public boolean tabuListContains(int i, int j){
         if (i > j){
             int temp = i;
             i = j;
@@ -193,7 +203,7 @@ public class TabuSearch implements TabuSearchInterface {
     }
 
     @Override
-    public void addToTabuList(Tuple<Integer, Integer> move){ //NOTE tabuList only contains moves where move.getX() < move.getY()
+    public void addToTabuList(Tuple<Integer, Integer> move){ //TabuList only contains moves where move.getX() < move.getY()
         if (Objects.equals(move.getX(), move.getY())) throw new IllegalArgumentException("i == j is not allowed");
         if (move.getX() < move.getY()) tabuList.set(tabuListHead, move);
         else tabuList.set(tabuListHead, new Tuple<Integer, Integer>(move.getY(), move.getX()));
@@ -223,11 +233,8 @@ public class TabuSearch implements TabuSearchInterface {
      * @param nodeI Node i.
      * @param nodeJ Node j.
      */
+    //The node after j is not given because it will always be the head of the list.
     private void makeMove2_optWithJAtEnd(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ){
-        //NOTE Extra check if needed.
-        /* if (getIndexOf(nodeI.getElement()) >= getIndexOf(nodeJ.getElement())){
-            throw new IllegalArgumentException("getIndex(nodeI) >= getIndex(nodeJ) is not allowed!");
-        } */
         //Change of node i-1
         nodeBefI.changeNodeTo(nodeI, nodeJ);
         //Change of node i
@@ -243,12 +250,8 @@ public class TabuSearch implements TabuSearchInterface {
      * @param nodeJ Node j.
      * @param nodeAfterJ The node after node j.
      */
-    //NOTE The node before node i is not given because it will always be the tail of the list.
+    //The node before node i is not given because it will always be the tail of the list.
     private void makeMove2_optWithIAtBegin(DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
-        //NOTE Extra check if needed.
-        /* if (getIndexOf(nodeI.getElement()) >= getIndexOf(nodeJ.getElement())){
-            throw new IllegalArgumentException("getIndex(nodeI) >= getIndex(nodeJ) is not allowed!");
-        } */
         //Change of node i
         nodeI.changeNodeTo(null, nodeAfterJ);
         //Change of node j
@@ -266,7 +269,7 @@ public class TabuSearch implements TabuSearchInterface {
      * @param nodeAfterJ The node after node j.
      */
     private void makeMove2_opt(DLL.Node nodeBefI, DLL.Node nodeI, DLL.Node nodeJ, DLL.Node nodeAfterJ){
-        if (nodeJ == tour.getLastNode() && nodeI == tour.getFirstNode()) return; //NOTE This does not change the tour, so we do not preform this one.
+        if (nodeJ == tour.getLastNode() && nodeI == tour.getFirstNode()) return; //This does not change the tour, so we do not preform this one.
         if (nodeJ == tour.getLastNode()){
             makeMove2_optWithJAtEnd(nodeBefI, nodeI, nodeJ);
             return;
@@ -318,7 +321,7 @@ public class TabuSearch implements TabuSearchInterface {
     }
 
     /**
-     * Help function for preformBestTwo_OptMove, creates and returs a fourTuple.
+     * Help function for preformBestTwo_OptMove, creates and returns a fourTuple.
      * @param nodeJ The second node of the fourTuple.
      * @param nodeAfterJ The fourth node of the fourTuple.
      * @param nodeBefI The first node of the fourTuple.
@@ -333,8 +336,8 @@ public class TabuSearch implements TabuSearchInterface {
 
     @Override
     public Tour getSolutionTour() throws Exception {
-        getInitialSolutionGreedy();
-        for (int n=0; n<1000; n++){
+        getInitialSolutionGreedy(); //Could get changed to "getInitialSolutionRandom()" if wanted
+        for (int n = 0; n< maximumNumberOfIterations; n++){
             preformBestTwo_OptMove();
             if (tour.getTourLength() < getCurrentBestTourLength()){
                 bestTour.makeDeepCopyOf(tour);

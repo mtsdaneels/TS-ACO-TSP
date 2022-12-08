@@ -4,6 +4,9 @@ package TS_ACO_TSP;
  * Class representing a tuple from class X and class Y.
  * @param <X> The class of the first element.
  * @param <Y> The class of the second element.
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class Tuple<X, Y> {
 

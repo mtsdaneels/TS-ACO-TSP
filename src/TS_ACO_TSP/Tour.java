@@ -8,6 +8,9 @@ import java.util.List;
  * Class representing a tour in a graph.
  * The class uses a double linked list as a representation of the tour. The last element of the double linked list
  * is connected to the first element in the double linked list (if the tour is 1,2,3 then u have a tour 1->2->3->1).
+ *
+ * @author Matias Daneels
+ * @version 1.0
  */
 public class Tour implements TourInterface {
 
