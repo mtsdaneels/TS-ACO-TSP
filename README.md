@@ -1,5 +1,5 @@
 # TS-ACO-TSP
-Implementation of Tabu Search and ACO for TSP problem (java)
+Implementation of Tabu Search and ACO for TSP problem (java).
 Assignment KU Leuven KULAK.
 
 # Tabu Search
